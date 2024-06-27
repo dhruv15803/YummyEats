@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { connectToDb } from './db/db.js';
 import authRoutes from './routes/auth.route.js';
+import adminRoutes from './routes/admin.route.js';
 connectToDb();
 app.use(cors({
     origin: process.env.CLIENT_URL,
@@ -14,6 +15,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 app.listen(port, () => {
     console.log(`server running at http://localhost:${port}`);
 });
