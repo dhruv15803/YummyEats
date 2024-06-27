@@ -18,4 +18,11 @@ export type GlobalContextType = {
     setLoggedInUser:React.Dispatch<SetStateAction<User | null>>;
     isAdmin:boolean;
     setIsAdmin:React.Dispatch<SetStateAction<boolean>>;
+    cuisines:Cuisine[];
+    setCuisines:React.Dispatch<SetStateAction<Cuisine[]>>;
+}
+
+export type Cuisine = {
+    _id:string;
+    cuisineName:string;
 }

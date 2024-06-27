@@ -4,8 +4,19 @@ import { useContext } from "react";
 import { GlobalContext, backendUrl } from "@/App";
 import { GlobalContextType } from "@/types";
 import { RxAvatar } from "react-icons/rx";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 import axios from "axios";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -20,18 +31,18 @@ const Navbar = () => {
 
   const logoutUser = async () => {
     try {
-        const response = await axios.get(`${backendUrl}/api/auth/logout`,{
-            withCredentials:true,
-        })
-        console.log(response);
-        setIsLoggedIn(false);
-        setLoggedInUser(null);
-        setIsAdmin(false);
-        navigate('/');
+      const response = await axios.get(`${backendUrl}/api/auth/logout`, {
+        withCredentials: true,
+      });
+      console.log(response);
+      setIsLoggedIn(false);
+      setLoggedInUser(null);
+      setIsAdmin(false);
+      navigate("/");
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-  }
+  };
   return (
     <>
       <nav className="flex items-center p-4 justify-between border-b">
@@ -41,25 +52,42 @@ const Navbar = () => {
         {isLoggedIn ? (
           <>
             <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
-                    <div className="text-4xl"><RxAvatar/></div>
-                    <span className="font-semibold text-lg">{loggedInUser?.email}</span>
-                </div>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button variant="outline">Logout</Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
-                            <AlertDialogDescription></AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={logoutUser}>Logout</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex items-center gap-1 cursor-pointer">
+                    <div className="text-4xl">
+                      <RxAvatar />
+                    </div>
+                    <span className="font-semibold text-lg">
+                      {loggedInUser?.email}
+                    </span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem>Profile</DropdownMenuItem>
+                    <DropdownMenuItem>Manage restaurant</DropdownMenuItem>
+                    {isAdmin && <DropdownMenuItem onClick={() => navigate('/admin')}>Admin panel</DropdownMenuItem>}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline">Logout</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you sure you want to logout?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription></AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={logoutUser}>
+                      Logout
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </>
         ) : (
