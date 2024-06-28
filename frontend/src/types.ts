@@ -29,6 +29,20 @@ export type Cuisine = {
     cuisineName:string;
 }
 
+export type Restaurant = {
+    _id:string;
+    restaurantName:string;
+    cityId:City;
+    addressLine1:string;
+    addressLine2:string;
+    restaurantThumbnail:string;
+    restaurantImages?:string[];
+    restaurantCuisines:Cuisine[];
+    restaurantOwner:string;
+    createdAt?:Date;
+    updatedAt?:Date;
+}
+
 export type City = {
     _id:string;
     cityName:string;

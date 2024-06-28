@@ -7,6 +7,8 @@ import cors from 'cors'
 import { connectToDb } from './db/db.js';
 import authRoutes from './routes/auth.route.js'
 import adminRoutes from './routes/admin.route.js'
+import restaurantRoutes from './routes/restaurant.route.js'
+
 connectToDb();
 
 app.use(cors({
@@ -19,6 +21,7 @@ app.use(cookieParser());
 
 app.use('/api/auth',authRoutes);
 app.use('/api/admin',adminRoutes);
+app.use('/api/restaurant',restaurantRoutes);
 
 app.listen(port,() => {
     console.log(`server running at http://localhost:${port}`);
