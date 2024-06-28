@@ -7,7 +7,7 @@ import axios from "axios";
 
 type AdminCuisineCardProps = {
   cuisine: Cuisine;
-  deleteCuisine: (id: string) => void;
+  deleteCuisine: (id: string) => Promise<void>;
 };
 
 const AdminCuisineCard = ({

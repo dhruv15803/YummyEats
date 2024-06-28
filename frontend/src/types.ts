@@ -20,9 +20,16 @@ export type GlobalContextType = {
     setIsAdmin:React.Dispatch<SetStateAction<boolean>>;
     cuisines:Cuisine[];
     setCuisines:React.Dispatch<SetStateAction<Cuisine[]>>;
+    cities:City[];
+    setCities:React.Dispatch<SetStateAction<City[]>>;
 }
 
 export type Cuisine = {
     _id:string;
     cuisineName:string;
+}
+
+export type City = {
+    _id:string;
+    cityName:string;
 }

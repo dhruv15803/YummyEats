@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { Cuisine } from "../models/cuisines.model.js"
 import { User } from "../models/users.model.js";
+import { City } from "../models/cities.model.js";
 
 const getCuisines = async (req:Request,res:Response) => {
     try {
@@ -113,9 +114,144 @@ const editCuisine = async (req:Request,res:Response) => {
 }
 
 
+const addCity = async (req:Request,res:Response) => {
+    try {
+        const {cityName}:{cityName:string} = req.body;
+        const userId = req.userId;
+        const user = await User.findById(userId);
+        if(!user?.isAdmin) {
+            return res.status(400).json({
+                "success":false,
+                "message":"user is not authorized for this action"
+            })
+        }
+        if(cityName.trim()==="") {
+            res.status(400).json({
+                "success":false,
+                "message":"Please enter a city"
+            })
+            return;
+        }
+        // check if  city already exists
+        const isCity = await City.findOne({cityName:cityName.trim().toLowerCase()});
+        if(isCity) {
+            res.status(400).json({
+                "success":false,
+                "message":"city already exists"
+            })
+            return;
+        }
+        // insert new ciyt
+        const newCity = await City.create({cityName:cityName.trim().toLowerCase()});
+        res.status(201).json({
+            "success":true,
+            newCity,
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const deleteCity = async (req:Request,res:Response) => {
+    try {
+        const {id} = req.params;
+        const userId = req.userId;
+        const user = await User.findById(userId);
+        if(!user?.isAdmin) {
+            return res.status(400).json({
+                "success":false,
+                "message":"user is not authorized for this action"
+            })
+        }
+        const city = await City.findById(id);
+        if(!city) {
+            res.status(400).json({
+                "success":false,
+                "message":"invalid city id"
+            })
+            return;
+        }
+        await City.deleteOne({_id:city._id});
+        res.status(200).json({
+            "success":true,
+            "message":"city deleted successfully"
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const editCity = async (req:Request,res:Response) => {
+    try {
+        const {newCityName,id}:{newCityName:string;id:string} = req.body;
+        const userId = req.userId;
+        const user = await User.findById(userId);
+        if(!user?.isAdmin) {
+            return res.status(400).json({
+                "success":false,
+                "message":"user is not authorized for this action"
+            })
+        }
+        if(newCityName.trim()==="") {
+            res.status(400).json({
+                "success":false,
+                "message":"please enter a city"
+            })
+            return;
+        }
+        // check if other cites with new city name already exist.
+        const isCity = await City.findOne({cityName:newCityName.trim().toLowerCase()});
+        if(isCity) {
+            res.status(400).json({
+                "success":false,
+                'message':"city already exists"
+            })
+            return;
+        }
+        await City.updateOne({_id:id},{$set:{cityName:newCityName.trim().toLowerCase()}});
+        const updatedCity = await City.findOne({_id:id});
+        res.status(200).json({
+            "success":true,
+            updatedCity,
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getCities = async (req:Request,res:Response) => {
+    try {
+        const cities = await City.find({});
+        res.status(200).json({
+            "success":true,
+            cities,
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// const getCuisines = async (req:Request,res:Response) => {
+//     try {
+//         const cuisines = await Cuisine.find({});
+//         res.status(200).json({
+//             "success":true,
+//             cuisines,
+//         })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// }
+
 export {
     getCuisines,
     addCuisine,
     deleteCuisine,
     editCuisine,
+    addCity,
+    getCities,
+    deleteCity,
+    editCity,
 }

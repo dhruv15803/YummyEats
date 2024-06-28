@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 const authenticatedUser = async (req, res, next) => {
     if (!req.cookies?.accessToken) {
-        res.status(400).json({
+        res.json({
             "success": false,
-            "message": "no accessToken cookie"
+            "message": "no accessToken cookie,user not logged in"
         });
         return;
     }

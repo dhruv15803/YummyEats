@@ -12,9 +12,9 @@ declare global {
 
 const authenticatedUser = async (req:Request,res:Response,next:NextFunction) => {
     if(!req.cookies?.accessToken) {
-        res.status(400).json({
+        res.json({
             "success":false,
-            "message":"no accessToken cookie"
+            "message":"no accessToken cookie,user not logged in"
         })
         return;
     }
