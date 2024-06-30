@@ -20,7 +20,34 @@ const RestaurantRegister = () => {
     useState<File | null>(null);
   const [restaurantThumbnailUrl, setRestaurantThumbnailUrl] =
     useState<string>("");
-  const [isThumbnailLoading,setIsThumbnailLoading] = useState<boolean>(false);
+  const [isThumbnailLoading, setIsThumbnailLoading] = useState<boolean>(false);
+  const [registerRestaurantErrorMsg, setRegisterRestaurantErrorMsg] =
+    useState<string>("");
+
+  const registerRestaurant = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      const response = await axios.post(
+        `${backendUrl}/api/restaurant/register`,
+        {
+          restaurantThumbnailUrl,
+          restaurantName,
+          restaurantCity,
+          addressLine1,
+          addressLine2,
+          restaurantCuisines,
+        },
+        { withCredentials: true }
+      );
+      console.log(response);
+    } catch (error: any) {
+      console.log(error);
+      setRegisterRestaurantErrorMsg(error.response.data.message);
+      setTimeout(() => {
+        setRegisterRestaurantErrorMsg("");
+      }, 4000);
+    }
+  };
 
   useEffect(() => {
     const suggestCities = () => {
@@ -31,9 +58,9 @@ const RestaurantRegister = () => {
       if (restaurantCity.length < 2) return;
       let temp = [];
       for (let i = 0; i < cities.length; i++) {
-        if(restaurantCity.trim().toLowerCase()===cities[i].cityName) {
-            temp = [];
-            break;
+        if (restaurantCity.trim().toLowerCase() === cities[i].cityName) {
+          temp = [];
+          break;
         }
         if (cities[i].cityName.includes(restaurantCity)) {
           temp.push(cities[i]);
@@ -81,21 +108,29 @@ const RestaurantRegister = () => {
         </div>
         <div className="flex flex-col border rounded-lg shadow-md p-4">
           <div>
-            {isThumbnailLoading && <div className="flex items-center gap-2">
-                <Loader height="80" width="80" color="#0088ff"/>
-                <span className="text-blue-500">Loading...</span>
-            </div>}
-            {(restaurantThumbnailUrl!== "" && isThumbnailLoading===false) ? (
+            {isThumbnailLoading && (
+              <div className="flex items-center gap-2 my-2">
+                <Loader height="80" width="80" color="black" />
+                <span className="text-black">Loading...</span>
+              </div>
+            )}
+            {restaurantThumbnailUrl !== "" && isThumbnailLoading === false ? (
               <>
                 <img
                   className="w-auto aspect-auto rounded-lg"
                   src={restaurantThumbnailUrl}
                   alt=""
                 />
-                <Button variant="destructive" className="my-2" onClick={() => {
+                <Button
+                  variant="destructive"
+                  className="my-2"
+                  onClick={() => {
                     setRestaurantThumbnailFile(null);
                     setRestaurantThumbnailUrl("");
-                }}>Remove thumbnail</Button>
+                  }}
+                >
+                  Remove thumbnail
+                </Button>
               </>
             ) : (
               <>
@@ -113,7 +148,10 @@ const RestaurantRegister = () => {
               </>
             )}
           </div>
-          <form className="flex flex-col gap-4 my-4">
+          <form
+            onSubmit={(e) => registerRestaurant(e)}
+            className="flex flex-col gap-4 my-4"
+          >
             <div className="flex flex-col gap-2">
               <Label htmlFor="restaurantName">Restaurant Name</Label>
               <Input
@@ -185,6 +223,18 @@ const RestaurantRegister = () => {
                 })}
               </div>
             </div>
+            <Button
+              disabled={
+                restaurantCuisines.length < 1 ||
+                restaurantThumbnailUrl === "" ||
+                restaurantName.trim() === "" ||
+                restaurantCity.trim() === "" ||
+                addressLine1.trim() === "" ||
+                addressLine2.trim() === ""
+              }
+            >
+              Create restaurant
+            </Button>
           </form>
         </div>
       </div>

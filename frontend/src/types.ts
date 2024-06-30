@@ -47,3 +47,12 @@ export type City = {
     _id:string;
     cityName:string;
 }
+
+export type MenuItem = {
+    _id:string;
+    item_name:string;
+    item_description:string;
+    item_price:number;
+    item_cuisine:Cuisine;
+    restaurant_id:string;
+}

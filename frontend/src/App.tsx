@@ -16,6 +16,7 @@ import AdminCity from "./Pages/AdminCity";
 import Loader from "./components/Loader";
 import ManageRestaurant from "./Pages/ManageRestaurant";
 import RestaurantRegister from "./Pages/RestaurantRegister";
+import RestaurantManage from "./Pages/RestaurantManage";
 export const backendUrl = "http://localhost:5000";
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
@@ -120,6 +121,7 @@ function App() {
               </Route>
               <Route path="manage/restaurant" element={<ManageRestaurant/>}/>
               <Route path="register/restaurant" element={<RestaurantRegister/>}/>
+              <Route path="manage/restaurant/:id" element={<RestaurantManage/>}/>
             </Route>
           </Routes>
         </Router>

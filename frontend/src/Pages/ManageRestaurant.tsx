@@ -1,11 +1,13 @@
 import { backendUrl } from "@/App";
 import ManageRestaurantCard from "@/components/ManageRestaurantCard";
+import { Button } from "@/components/ui/button";
 import { Restaurant } from "@/types";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ManageRestaurant = () => {
+  const navigate = useNavigate();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
 
   useEffect(() => {
@@ -30,16 +32,23 @@ const ManageRestaurant = () => {
       <div className="flex flex-col mx-10 my-16">
         <div className="text-xl font-semibold mb-4">Your restaurants</div>
         {restaurants.length !== 0 ? (
-          <div className="flex flex-col gap-2 border rounded-lg p-4 shadow-md">
-            {restaurants?.map((restaurant) => {
-              return (
-                <ManageRestaurantCard
-                  key={restaurant._id}
-                  restaurant={restaurant}
-                />
-              );
-            })}
-          </div>
+          <>
+            <div className="flex flex-col gap-2 border rounded-lg p-4 shadow-md">
+              {restaurants?.map((restaurant) => {
+                return (
+                  <ManageRestaurantCard
+                    key={restaurant._id}
+                    restaurant={restaurant}
+                  />
+                );
+              })}
+            </div>
+            <div className="flex justify-end my-4">
+              <Button onClick={() => navigate("/register/restaurant")}>
+                New restaurant
+              </Button>
+            </div>
+          </>
         ) : (
           <>
             <div className="flex flex-col sm:flex-row sm:items-center gap-1">
