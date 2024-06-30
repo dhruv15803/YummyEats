@@ -38,6 +38,7 @@ const RestaurantManage = () => {
   const [itemPrice, setItemPrice] = useState<number | "">("");
   const [itemCuisine, setItemCuisine] = useState<string>("");
   const [addItemErrorMsg, setAddItemErrorMsg] = useState<string>("");
+  const [addItemSuccessMsg,setAddItemSuccessMsg] = useState<string>("");
 
   const addMenuItem = async () => {
     try {
@@ -66,6 +67,14 @@ const RestaurantManage = () => {
       );
       console.log(response);
       setMenuItems((prev) => [...prev, response.data.newMenuItem]);
+      setAddItemSuccessMsg("Item added");
+      setTimeout(() => {
+        setAddItemErrorMsg("");
+      },4000)
+      setItemName("");
+      setItemDescription("");
+      setItemPrice("");
+      setItemCuisine("");
     } catch (error) {
       console.log(error);
     }
@@ -246,6 +255,9 @@ const RestaurantManage = () => {
                     </Select>
                   </div>
                 </div>
+                {addItemSuccessMsg!=="" && <>
+                  <div className="text-blue-500">{addItemSuccessMsg}</div>
+                </>}
                 {addItemErrorMsg !== "" && (
                   <div className="text-red-500">{addItemErrorMsg}</div>
                 )}
