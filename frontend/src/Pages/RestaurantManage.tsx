@@ -1,6 +1,7 @@
 import { backendUrl } from "@/App";
 import Loader from "@/components/Loader";
 import ManageMenuItemCard from "@/components/ManageMenuItemCard";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -26,9 +27,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantManage = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -38,7 +40,7 @@ const RestaurantManage = () => {
   const [itemPrice, setItemPrice] = useState<number | "">("");
   const [itemCuisine, setItemCuisine] = useState<string>("");
   const [addItemErrorMsg, setAddItemErrorMsg] = useState<string>("");
-  const [addItemSuccessMsg,setAddItemSuccessMsg] = useState<string>("");
+  const [addItemSuccessMsg, setAddItemSuccessMsg] = useState<string>("");
 
   const addMenuItem = async () => {
     try {
@@ -69,8 +71,8 @@ const RestaurantManage = () => {
       setMenuItems((prev) => [...prev, response.data.newMenuItem]);
       setAddItemSuccessMsg("Item added");
       setTimeout(() => {
-        setAddItemErrorMsg("");
-      },4000)
+        setAddItemSuccessMsg("");
+      }, 4000);
       setItemName("");
       setItemDescription("");
       setItemPrice("");
@@ -171,7 +173,12 @@ const RestaurantManage = () => {
               );
             })}
           </div>
-          <div>{menuItems.length} menu items</div>
+          <div className="flex items-center gap-2">
+            <span> {menuItems.length} menu items</span>
+            {menuItems.length < 5 && (
+              <span className="text-red-500">Add atleast 5 items</span>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col border rounded-lg shadow-md p-4">
@@ -255,9 +262,11 @@ const RestaurantManage = () => {
                     </Select>
                   </div>
                 </div>
-                {addItemSuccessMsg!=="" && <>
-                  <div className="text-blue-500">{addItemSuccessMsg}</div>
-                </>}
+                {addItemSuccessMsg !== "" && (
+                  <>
+                    <div className="text-blue-500">{addItemSuccessMsg}</div>
+                  </>
+                )}
                 {addItemErrorMsg !== "" && (
                   <div className="text-red-500">{addItemErrorMsg}</div>
                 )}
@@ -268,6 +277,29 @@ const RestaurantManage = () => {
             </Dialog>
           </div>
         </div>
+        {menuItems.length >= 5 && (
+          <div className="flex justify-end my-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button>Complete</Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Restaurant creation complete
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Your restaurant is now available to users
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Stay on this page</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => navigate('/')}>Home</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        )}
       </div>
     </>
   );

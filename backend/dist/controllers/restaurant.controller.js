@@ -82,6 +82,36 @@ const registerRestaurant = async (req, res) => {
         console.log(error);
     }
 };
+const removeRestaurant = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.userId;
+        const restaurant = await Restaurant.findById(id);
+        if (!restaurant) {
+            res.status(400).json({
+                success: false,
+                message: "invalid restaurant id",
+            });
+            return;
+        }
+        if (String(restaurant.restaurantOwner) !== userId) {
+            res.status(400).json({
+                success: false,
+                message: "unauthorized user",
+            });
+            return;
+        }
+        await MenuItem.deleteMany({ restaurant_id: restaurant._id });
+        await Restaurant.deleteOne({ _id: restaurant._id });
+        res.status(200).json({
+            success: true,
+            message: "restaurant removed",
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
 const getRestaurantById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -193,11 +223,13 @@ const editMenuItem = async (req, res) => {
             });
             return;
         }
-        const cuisine = await Cuisine.findOne({ cuisineName: newMenuItemCuisine.trim().toLowerCase() });
+        const cuisine = await Cuisine.findOne({
+            cuisineName: newMenuItemCuisine.trim().toLowerCase(),
+        });
         if (!cuisine) {
             res.status(400).json({
-                "success": false,
-                "message": "invalid cuisine name"
+                success: false,
+                message: "invalid cuisine name",
             });
             return;
         }
@@ -209,9 +241,9 @@ const editMenuItem = async (req, res) => {
                 item_price: newMenuItemPrice,
             },
         });
-        const updatedItem = await MenuItem.findOne({ _id: menuItem._id }).populate('item_cuisine');
+        const updatedItem = await MenuItem.findOne({ _id: menuItem._id }).populate("item_cuisine");
         res.status(200).json({
-            "success": true,
+            success: true,
             updatedItem,
         });
     }
@@ -219,4 +251,4 @@ const editMenuItem = async (req, res) => {
         console.log(error);
     }
 };
-export { getMyRestaurants, getFileUrl, registerRestaurant, getRestaurantById, getMenuItems, addMenuItem, deleteMenuItem, editMenuItem, };
+export { getMyRestaurants, getFileUrl, registerRestaurant, getRestaurantById, getMenuItems, addMenuItem, deleteMenuItem, editMenuItem, removeRestaurant, };
