@@ -1,7 +1,18 @@
-import { backendUrl } from "@/App";
+import { GlobalContext, backendUrl } from "@/App";
 import Loader from "@/components/Loader";
 import ManageMenuItemCard from "@/components/ManageMenuItemCard";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import SelectCuisineCard from "@/components/SelectCuisineCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,9 +33,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MenuItem, Restaurant } from "@/types";
+import { Cuisine, GlobalContextType, MenuItem, Restaurant } from "@/types";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
@@ -32,6 +43,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const RestaurantManage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { cuisines, cities } = useContext(GlobalContext) as GlobalContextType;
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,6 +53,71 @@ const RestaurantManage = () => {
   const [itemCuisine, setItemCuisine] = useState<string>("");
   const [addItemErrorMsg, setAddItemErrorMsg] = useState<string>("");
   const [addItemSuccessMsg, setAddItemSuccessMsg] = useState<string>("");
+  const [isEditRestaurant, setIsEditRestaurant] = useState<boolean>(false);
+  const [newRestaurantName, setNewRestaurantName] = useState<string>("");
+  const [newRestaurantCity, setNewRestaurantCity] = useState<string>("");
+  const [newAddressLine1, setNewAddressLine1] = useState<string>("");
+  const [newAddressLine2, setNewAddressLine2] = useState<string>("");
+  const [newRestaurantCuisines, setNewRestaurantCuisines] = useState<Cuisine[]>(
+    []
+  );
+  const [editRestaurantErrorMsg, setEditRestaurantErrorMsg] =
+    useState<string>("");
+
+  const toggleEditRestaurant = () => {
+    if (isEditRestaurant === false) {
+      setIsEditRestaurant(true);
+      setNewRestaurantName(restaurant?.restaurantName!);
+      setNewRestaurantCity(restaurant?.cityId.cityName!);
+      setNewAddressLine1(restaurant?.addressLine1!);
+      setNewAddressLine2(restaurant?.addressLine2!);
+      setNewRestaurantCuisines((prev) => [
+        ...prev,
+        ...restaurant?.restaurantCuisines!,
+      ]);
+    } else {
+      setIsEditRestaurant(false);
+    }
+  };
+
+  const editRestaurant = async () => {
+    try {
+      if (
+        newRestaurantName.trim() === "" ||
+        newRestaurantCity.trim() === "" ||
+        newAddressLine1.trim() === "" ||
+        newAddressLine2.trim() === "" ||
+        newRestaurantCuisines.length < 1
+      ) {
+        setEditRestaurantErrorMsg("Please enter all fields");
+        setTimeout(() => {
+          setEditRestaurantErrorMsg("");
+        }, 4000);
+        return;
+      }
+      const response = await axios.put(
+        `${backendUrl}/api/restaurant/edit`,
+        {
+          newRestaurantName,
+          newRestaurantCity,
+          newAddressLine1,
+          newAddressLine2,
+          newRestaurantCuisines,
+          id: restaurant?._id,
+        },
+        { withCredentials: true }
+      );
+      console.log(response);
+      setRestaurant(response.data.updatedRestaurant);
+      setIsEditRestaurant(false);
+    } catch (error: any) {
+      console.log(error);
+      setEditRestaurantErrorMsg(error.response.data.message);
+      setTimeout(() => {
+        setEditRestaurantErrorMsg("");
+      }, 4000);
+    }
+  };
 
   const addMenuItem = async () => {
     try {
@@ -155,29 +232,92 @@ const RestaurantManage = () => {
       <div className="flex flex-col mx-10 my-16 gap-16">
         <div className="flex flex-col gap-2 p-4 border rounded-lg shadow-md">
           <div className="text-xl font-semibold">Restaurant details</div>
-          <div className="text-xl">{restaurant.restaurantName}</div>
-          <div className="flex items-center gap-1">
-            <CiLocationOn />
-            <span>{restaurant.cityId.cityName},</span>
-            <span>{restaurant.addressLine1},</span>
-            <span>{restaurant.addressLine2}</span>
-          </div>
-          <div className="flex items-center flex-wrap gap-2">
-            <BiDish />
-            {restaurant.restaurantCuisines.map((cuisine) => {
-              return (
-                <div key={cuisine._id} className="flex items-center gap-1">
-                  <span>•</span>
-                  <span className="font-semibold">{cuisine.cuisineName}</span>
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex items-center gap-2">
-            <span> {menuItems.length} menu items</span>
-            {menuItems.length < 5 && (
-              <span className="text-red-500">Add atleast 5 items</span>
-            )}
+          {isEditRestaurant ? (
+            <>
+              <div>
+                <Input
+                  value={newRestaurantName}
+                  onChange={(e) => setNewRestaurantName(e.target.value)}
+                  type="text"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={newRestaurantCity}
+                  onValueChange={(value) => setNewRestaurantCity(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities?.map((city) => {
+                      return (
+                        <SelectItem key={city._id} value={city.cityName}>
+                          {city.cityName}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                <Input
+                  value={newAddressLine1}
+                  onChange={(e) => setNewAddressLine1(e.target.value)}
+                  type="text"
+                />
+                <Input
+                  value={newAddressLine2}
+                  onChange={(e) => setNewAddressLine2(e.target.value)}
+                  type="text"
+                />
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {cuisines.map((cuisine) => {
+                  return (
+                    <SelectCuisineCard
+                      key={cuisine._id}
+                      cuisine={cuisine}
+                      restaurantCuisines={newRestaurantCuisines}
+                      setRestaurantCuisines={setNewRestaurantCuisines}
+                    />
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-xl">{restaurant.restaurantName}</div>
+              <div className="flex items-center gap-1">
+                <CiLocationOn />
+                <span>{restaurant.cityId.cityName},</span>
+                <span>{restaurant.addressLine1},</span>
+                <span>{restaurant.addressLine2}</span>
+              </div>
+              <div className="flex items-center flex-wrap gap-2">
+                <BiDish />
+                {restaurant.restaurantCuisines.map((cuisine) => {
+                  return (
+                    <div key={cuisine._id} className="flex items-center gap-1">
+                      <span>•</span>
+                      <span className="font-semibold">
+                        {cuisine.cuisineName}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex items-center gap-2">
+                <span> {menuItems.length} menu items</span>
+                {menuItems.length < 5 && (
+                  <span className="text-red-500">Add atleast 5 items</span>
+                )}
+              </div>
+            </>
+          )}
+          <div className="flex justify-end gap-4">
+            {isEditRestaurant && <Button onClick={editRestaurant}>Edit</Button>}
+            <Button onClick={toggleEditRestaurant} variant="outline">
+              {isEditRestaurant ? "Cancel" : "Edit restaurant details"}
+            </Button>
           </div>
         </div>
 
@@ -294,7 +434,9 @@ const RestaurantManage = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Stay on this page</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => navigate('/')}>Home</AlertDialogAction>
+                  <AlertDialogAction onClick={() => navigate("/")}>
+                    Home
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

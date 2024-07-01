@@ -5,25 +5,40 @@ import { Label } from "./ui/label";
 
 type SelectCuisineCardProps = {
   cuisine: Cuisine;
-  restaurantCuisines:Cuisine[];
-  setRestaurantCuisines:React.Dispatch<SetStateAction<Cuisine[]>>;
+  restaurantCuisines: Cuisine[];
+  setRestaurantCuisines: React.Dispatch<SetStateAction<Cuisine[]>>;
 };
 
-const SelectCuisineCard = ({ cuisine,restaurantCuisines,setRestaurantCuisines}: SelectCuisineCardProps) => {
+const SelectCuisineCard = ({
+  cuisine,
+  restaurantCuisines,
+  setRestaurantCuisines,
+}: SelectCuisineCardProps) => {
   const [isCuisineChecked, setIsCuisineChecked] = useState<boolean>(false);
 
   const addCuisine = () => {
-    setRestaurantCuisines((prev) => [...prev,cuisine]);
+    for (let i = 0; i < restaurantCuisines.length; i++) {
+      if (restaurantCuisines[i]._id === cuisine._id) return;
+    }
+    setRestaurantCuisines((prev) => [...prev, cuisine]);
   };
 
   const deleteCuisine = () => {
-    const newCuisines = restaurantCuisines.filter((r) => r._id!==cuisine._id);
+    const newCuisines = restaurantCuisines.filter((r) => r._id !== cuisine._id);
     setRestaurantCuisines(newCuisines);
   };
 
   useEffect(() => {
     isCuisineChecked ? addCuisine() : deleteCuisine();
-  },[isCuisineChecked])
+  }, [isCuisineChecked]);
+
+  useEffect(() => {
+    for (let i = 0; i < restaurantCuisines.length; i++) {
+      if (restaurantCuisines[i]._id === cuisine._id) {
+        setIsCuisineChecked(true);
+      }
+    }
+  }, []);
 
   return (
     <>
