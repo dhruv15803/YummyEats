@@ -3,12 +3,15 @@ import React from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import { Button } from "./ui/button";
+import { useNavigate } from "react-router-dom";
 
 type RestaurantResultCardProps = {
   restaurant: Restaurant;
 };
 
 const RestaurantResultCard = ({ restaurant }: RestaurantResultCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div className="flex gap-2 border rounded-lg shadow-md">
       <div className="w-[30%]">
@@ -36,7 +39,11 @@ const RestaurantResultCard = ({ restaurant }: RestaurantResultCardProps) => {
           })}
         </div>
         <div>
-          <Button>Menu</Button>
+          <Button
+            onClick={() => navigate(`/restaurants/menu/${restaurant._id}`)}
+          >
+            Menu
+          </Button>
         </div>
       </div>
     </div>
