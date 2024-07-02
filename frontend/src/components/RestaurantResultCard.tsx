@@ -15,7 +15,11 @@ const RestaurantResultCard = ({ restaurant }: RestaurantResultCardProps) => {
   return (
     <div className="flex gap-2 border rounded-lg shadow-md">
       <div className="w-[30%]">
-        <img className="h-48" src={restaurant.restaurantThumbnail} alt="" />
+        <img
+          className="h-48 rounded-lg"
+          src={restaurant.restaurantThumbnail}
+          alt=""
+        />
       </div>
       <div className="flex flex-col w-[70%] gap-2">
         <div className="text-xl font-semibold">{restaurant.restaurantName}</div>

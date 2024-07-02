@@ -64,7 +64,7 @@ const RestaurantResults = () => {
         <span>({restaurants.length} results)</span>
       </div>
       <div className="flex  gap-4 mx-10 my-16">
-        <div className="flex flex-col w-[20%] border p-2 gap-1">
+        <div className="flex flex-col w-[20%] border p-2 shadow-md rounded-lg gap-1">
           {filterByCuisines.length !== 0 && (
             <Button onClick={() => setFilterByCuisines([])}>
               Clear filters
@@ -82,7 +82,7 @@ const RestaurantResults = () => {
             );
           })}
         </div>
-        <div className="flex flex-col w-[80%] border p-2">
+        <div className="flex flex-col w-[80%] p-2 gap-4">
           {filteredRestaurants.map((restaurant) => {
             return (
               <RestaurantResultCard

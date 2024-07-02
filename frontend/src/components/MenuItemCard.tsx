@@ -45,8 +45,8 @@ const MenuItemCard = ({ item, cart, setCart }: MenuItemCardProps) => {
         },
       ]);
       toast({
-        title:"Item added"
-      })
+        title: "Item added",
+      });
     }
   };
 
