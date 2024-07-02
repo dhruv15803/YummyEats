@@ -182,6 +182,31 @@ const getMenuItems = async (req, res) => {
         console.log(error);
     }
 };
+const getRestaurantsByCity = async (req, res) => {
+    try {
+        const { cityName } = req.params;
+        const city = await City.findOne({
+            cityName: cityName.trim().toLowerCase(),
+        });
+        if (!city) {
+            res.status(400).json({
+                success: false,
+                message: "invalid city name",
+            });
+            return;
+        }
+        const restaurants = await Restaurant.find({ cityId: city._id })
+            .populate("cityId")
+            .populate("restaurantCuisines");
+        res.status(200).json({
+            success: true,
+            restaurants,
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+};
 const addMenuItem = async (req, res) => {
     try {
         const { itemName, itemDescription, itemPrice, itemCuisine, restaurantId, } = req.body;
@@ -286,4 +311,4 @@ const editMenuItem = async (req, res) => {
         console.log(error);
     }
 };
-export { getMyRestaurants, getFileUrl, registerRestaurant, getRestaurantById, getMenuItems, addMenuItem, deleteMenuItem, editMenuItem, removeRestaurant, editRestaurant, };
+export { getMyRestaurants, getFileUrl, registerRestaurant, getRestaurantById, getMenuItems, addMenuItem, deleteMenuItem, editMenuItem, removeRestaurant, editRestaurant, getRestaurantsByCity, };

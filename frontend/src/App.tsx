@@ -17,6 +17,8 @@ import Loader from "./components/Loader";
 import ManageRestaurant from "./Pages/ManageRestaurant";
 import RestaurantRegister from "./Pages/RestaurantRegister";
 import RestaurantManage from "./Pages/RestaurantManage";
+import Home from "./Pages/Home";
+import RestaurantResults from "./Pages/RestaurantResults";
 export const backendUrl = "http://localhost:5000";
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
@@ -106,7 +108,7 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<>Home</>} />
+              <Route index element={<Home/>} />
               <Route
                 path="login"
                 element={isLoggedIn ? <Navigate to="/" /> : <Login />}
@@ -122,6 +124,7 @@ function App() {
               <Route path="manage/restaurant" element={<ManageRestaurant/>}/>
               <Route path="register/restaurant" element={<RestaurantRegister/>}/>
               <Route path="manage/restaurant/:id" element={<RestaurantManage/>}/>
+              <Route path="restaurants/:city" element={<RestaurantResults/>}/>
             </Route>
           </Routes>
         </Router>

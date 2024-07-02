@@ -33,12 +33,16 @@ const SelectCuisineCard = ({
   }, [isCuisineChecked]);
 
   useEffect(() => {
+    if(restaurantCuisines.length===0) {
+      setIsCuisineChecked(false);
+      return;
+    }
     for (let i = 0; i < restaurantCuisines.length; i++) {
       if (restaurantCuisines[i]._id === cuisine._id) {
         setIsCuisineChecked(true);
       }
     }
-  }, []);
+  }, [restaurantCuisines]);
 
   return (
     <>

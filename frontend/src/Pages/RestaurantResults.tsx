@@ -1,0 +1,100 @@
+import { GlobalContext, backendUrl } from "@/App";
+import RestaurantResultCard from "@/components/RestaurantResultCard";
+import SelectCuisineCard from "@/components/SelectCuisineCard";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Cuisine, GlobalContextType, Restaurant } from "@/types";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+const RestaurantResults = () => {
+  const { city } = useParams();
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const { cuisines } = useContext(GlobalContext) as GlobalContextType;
+  const [filterByCuisines, setFilterByCuisines] = useState<Cuisine[]>([]);
+  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>(
+    []
+  );
+
+  useEffect(() => {
+    const fetchRestaurantsByCity = async () => {
+      try {
+        const response = await axios.get(
+          `${backendUrl}/api/restaurant/getByCity/${city}`,
+          {
+            withCredentials: true,
+          }
+        );
+        console.log(response);
+        setRestaurants(response.data.restaurants);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchRestaurantsByCity();
+  }, [city]);
+
+  useEffect(() => {
+    if (filterByCuisines.length === 0) {
+      setFilteredRestaurants(restaurants);
+      return;
+    }
+    const filtered = restaurants.filter((r) => {
+      let isFilter = false;
+      for (let i = 0; i < filterByCuisines.length; i++) {
+        isFilter = false;
+        for (let j = 0; j < r.restaurantCuisines.length; j++) {
+          if (r.restaurantCuisines[j]._id === filterByCuisines[i]._id) {
+            isFilter = true;
+            break;
+          }
+        }
+        if (isFilter === false) break;
+      }
+      if (isFilter) return r;
+    });
+    setFilteredRestaurants(filtered);
+  }, [filterByCuisines, restaurants]);
+
+  return (
+    <>
+      <div className="my-8 flex items-center mx-10  gap-2">
+        <span className="text-2xl">Restaurant results in {city} </span>
+        <span>({restaurants.length} results)</span>
+      </div>
+      <div className="flex  gap-4 mx-10 my-16">
+        <div className="flex flex-col w-[20%] border p-2 gap-1">
+          {filterByCuisines.length !== 0 && (
+            <Button onClick={() => setFilterByCuisines([])}>
+              Clear filters
+            </Button>
+          )}
+          <div className="text-lg font-semibold">Filter by cuisine</div>
+          {cuisines.map((cuisine) => {
+            return (
+              <SelectCuisineCard
+                key={cuisine._id}
+                cuisine={cuisine}
+                restaurantCuisines={filterByCuisines}
+                setRestaurantCuisines={setFilterByCuisines}
+              />
+            );
+          })}
+        </div>
+        <div className="flex flex-col w-[80%] border p-2">
+          {filteredRestaurants.map((restaurant) => {
+            return (
+              <RestaurantResultCard
+                key={restaurant._id}
+                restaurant={restaurant}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default RestaurantResults;
