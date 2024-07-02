@@ -2,6 +2,7 @@ import { CartItem, MenuItem } from "@/types";
 import React, { SetStateAction } from "react";
 import { BiDish } from "react-icons/bi";
 import { Button } from "./ui/button";
+import { useToast } from "./ui/use-toast";
 
 type MenuItemCardProps = {
   item: MenuItem;
@@ -10,6 +11,8 @@ type MenuItemCardProps = {
 };
 
 const MenuItemCard = ({ item, cart, setCart }: MenuItemCardProps) => {
+  const { toast } = useToast();
+
   const addToCart = () => {
     // use the setCart function to append item to cart
     // if item already in cart , increase the qty.
@@ -26,6 +29,11 @@ const MenuItemCard = ({ item, cart, setCart }: MenuItemCardProps) => {
       }
     });
     setCart(newCart);
+    if (isItemInCart) {
+      toast({
+        title: "item quantity incremented",
+      });
+    }
     if (!isItemInCart) {
       setCart((prev) => [
         ...prev,
@@ -36,6 +44,9 @@ const MenuItemCard = ({ item, cart, setCart }: MenuItemCardProps) => {
           itemQty: 1,
         },
       ]);
+      toast({
+        title:"Item added"
+      })
     }
   };
 

@@ -7,6 +7,7 @@ import {
   Sheet,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -18,10 +19,14 @@ import { useParams } from "react-router-dom";
 
 const RestaurantMenu = () => {
   const { id } = useParams();
+  let cartItems = JSON.parse(localStorage.getItem(`cartItems-${id}`)!);
+  if (cartItems === undefined || cartItems === null) {
+    cartItems = [];
+  }
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<CartItem[]>(cartItems);
 
   const incrementQty = (itemId: string) => {
     const newCart = cart.map((cartItem) => {
@@ -59,6 +64,11 @@ const RestaurantMenu = () => {
     return total;
   };
 
+  const removeCartItem = (itemId: string) => {
+    const newCartItems = cart.filter((cartItem) => cartItem.itemId !== itemId);
+    setCart(newCartItems);
+  };
+
   useEffect(() => {
     const getRestaurantById = async () => {
       try {
@@ -88,6 +98,11 @@ const RestaurantMenu = () => {
     getMenuItems();
   }, [id]);
 
+  useEffect(() => {
+    if (restaurant === null) return;
+    localStorage.setItem(`cartItems-${restaurant?._id}`, JSON.stringify(cart));
+  }, [cart]);
+
   if (isLoading) {
     return (
       <>
@@ -115,7 +130,7 @@ const RestaurantMenu = () => {
                 <SheetTitle>Cart</SheetTitle>
                 <SheetDescription></SheetDescription>
               </SheetHeader>
-              {cart.length !== 0 && (
+              {cart.length !== 0 ? (
                 <>
                   {cart.map((cartItem) => {
                     return (
@@ -124,6 +139,7 @@ const RestaurantMenu = () => {
                         cartItem={cartItem}
                         decrementQty={decrementQty}
                         incrementQty={incrementQty}
+                        removeCartItem={removeCartItem}
                       />
                     );
                   })}
@@ -132,6 +148,15 @@ const RestaurantMenu = () => {
                     <span>₹ {totalPrice()}</span>
                   </div>
                 </>
+              ) : (
+                <>
+                  <div className="text-gray-500">Cart has no items</div>
+                </>
+              )}
+              {cart.length !== 0 && (
+                <SheetFooter className="my-4">
+                  <Button>Checkout</Button>
+                </SheetFooter>
               )}
             </SheetContent>
           </Sheet>
