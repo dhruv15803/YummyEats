@@ -63,3 +63,33 @@ export type CartItem = {
   itemPrice: number;
   itemQty: number;
 };
+
+export type OrderItem = {
+  _id:string;
+  itemId: string;
+  itemName: string;
+  itemPrice: number;
+  itemQty: number;
+}
+
+export type Address = {
+  _id:string;
+  addressLine1:string;
+  addressLine2:string;
+  pin_code:number;
+  cityId:City;
+  userId:string;
+}
+
+
+export type Order = {
+  _id:string;
+  user_id:string;
+  shipping_address:Address;
+  orderItems:OrderItem[];
+  orderStatus:"PLACED" | "PAID" | "IN PROGRESS" | "DELIVERED" | "OUT FOR DELIVERY"
+  orderTotal:number;
+  restaurant_id:Restaurant;
+  createdAt:Date,
+  updatedAt:Date,
+}

@@ -1,8 +1,20 @@
-import { backendUrl } from "@/App";
+import { backendUrl, GlobalContext } from "@/App";
 import CartItemCard from "@/components/CartItemCard";
 import Loader from "@/components/Loader";
 import MenuItemCard from "@/components/MenuItemCard";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Sheet,
   SheetContent,
@@ -12,10 +24,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { CartItem, MenuItem, Restaurant } from "@/types";
+import { CartItem, GlobalContextType, MenuItem, Restaurant } from "@/types";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantMenu = () => {
   const { id } = useParams();
@@ -27,6 +39,10 @@ const RestaurantMenu = () => {
   const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [cart, setCart] = useState<CartItem[]>(cartItems);
+  const [addressLine1, setAddressLine1] = useState<string>("");
+  const [addressLine2, setAddressLine2] = useState<string>("");
+  const [pinCode, setPinCode] = useState<string>("");
+  const { loggedInUser } = useContext(GlobalContext) as GlobalContextType;
 
   const incrementQty = (itemId: string) => {
     const newCart = cart.map((cartItem) => {
@@ -56,6 +72,8 @@ const RestaurantMenu = () => {
     setCart(newCart);
   };
 
+  console.log(cart);
+
   const totalPrice = () => {
     let total = 0;
     for (let i = 0; i < cart.length; i++) {
@@ -67,6 +85,28 @@ const RestaurantMenu = () => {
   const removeCartItem = (itemId: string) => {
     const newCartItems = cart.filter((cartItem) => cartItem.itemId !== itemId);
     setCart(newCartItems);
+  };
+
+  const checkoutOrder = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/order/checkout`,
+        {
+          cart,
+          restaurantId: restaurant?._id,
+          addressLine1,
+          addressLine2,
+          cityName: restaurant?.cityId.cityName,
+          pin_code: parseInt(pinCode),
+        },
+        { withCredentials: true }
+      );
+      console.log(response);
+      window.location.href = response.data.url;
+      setCart([]);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -155,7 +195,63 @@ const RestaurantMenu = () => {
               )}
               {cart.length !== 0 && (
                 <SheetFooter className="my-4">
-                  <Button>Checkout</Button>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button>Checkout</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Order details</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                      </DialogHeader>
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                          <Input
+                            readOnly
+                            type="email"
+                            value={loggedInUser?.email}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label>Address Line 1</Label>
+                          <Input
+                            value={addressLine1}
+                            onChange={(e) => setAddressLine1(e.target.value)}
+                            type="text"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label>Address Line 2</Label>
+                          <Input
+                            value={addressLine2}
+                            onChange={(e) => setAddressLine2(e.target.value)}
+                            type="text"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label>City</Label>
+                          <Input
+                            readOnly
+                            value={restaurant?.cityId.cityName}
+                            type="text"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label>Pin code</Label>
+                          <Input
+                            type="text"
+                            value={pinCode}
+                            onChange={(e) => setPinCode(e.target.value)}
+                            maxLength={6}
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <DialogClose>Cancel</DialogClose>
+                        <Button onClick={checkoutOrder}>Checkout</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </SheetFooter>
               )}
             </SheetContent>

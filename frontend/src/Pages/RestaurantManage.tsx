@@ -231,7 +231,16 @@ const RestaurantManage = () => {
     <>
       <div className="flex flex-col mx-10 my-16 gap-16">
         <div className="flex flex-col gap-2 p-4 border rounded-lg shadow-md">
-          <div className="text-xl font-semibold">Restaurant details</div>
+          <div className="flex items-center justify-between">
+            <span className="text-xl font-semibold">Restaurant details</span>
+            <Button
+              onClick={() =>
+                navigate(`/manage/restaurant/orders/${restaurant._id}`)
+              }
+            >
+              View restaurant orders
+            </Button>
+          </div>
           {isEditRestaurant ? (
             <>
               <div>
