@@ -4,6 +4,7 @@ import { User } from "../models/users.model.js";
 import bcrypt from "bcrypt";
 import { Address } from "../models/addresses.model.js";
 import { City } from "../models/cities.model.js";
+import { Order } from "../models/orders.model.js";
 
 const checkPassword = async (req: Request, res: Response) => {
   try {
@@ -136,10 +137,67 @@ const removeAddress = async (req: Request, res: Response) => {
       });
       return;
     }
+
+    // checking if the address has orders tied to it.
+    // if the order has a status of delivered then it is ok to delete the address.
+    let isOrdersDelivered = true;
+    const orders = await Order.find({ shipping_address: address._id });
+    for (let i = 0; i < orders.length; i++) {
+      if (orders[i].orderStatus !== "DELIVERED") {
+        isOrdersDelivered = false;
+        break;
+      }
+    }
+
+    if (!isOrdersDelivered) {
+      return res.status(400).json({
+        success: false,
+        message: "You have pending orders for this address",
+      });
+    }
+
     await Address.deleteOne({ _id: address._id });
     res.status(200).json({
       success: true,
       message: "Successfully deleted address",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const editAddress = async (req: Request, res: Response) => {
+  try {
+    const { newCityName, newAddressLine1, newAddressLine2, newPinCode, id } =
+      req.body;
+    const newCity = await City.findOne({
+      cityName: newCityName.trim().toLowerCase(),
+    });
+    if (!newCity) {
+      res.status(400).json({
+        success: false,
+        message: "invalid city name",
+      });
+      return;
+    }
+    await Address.updateOne(
+      { _id: id },
+      {
+        $set: {
+          addressLine1: newAddressLine1,
+          addressLine2: newAddressLine2,
+          cityId: newCity._id,
+          pin_code: parseInt(newPinCode),
+          userId: new mongoose.Types.ObjectId(req.userId),
+        },
+      }
+    );
+    const updatedAddress = await Address.findOne({ _id: id }).populate(
+      "cityId"
+    );
+    res.status(200).json({
+      success: true,
+      updatedAddress,
     });
   } catch (error) {
     console.log(error);
@@ -152,4 +210,5 @@ export {
   getUserAddresses,
   addAddress,
   removeAddress,
+  editAddress,
 };
