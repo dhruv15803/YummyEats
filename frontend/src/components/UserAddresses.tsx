@@ -16,6 +16,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import UserAddressCard from "./UserAddressCard";
 
 const UserAddresses = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -31,6 +32,14 @@ const UserAddresses = () => {
 
   const addAddress = async () => {
     try {
+      // if addresses is equal to 4 , no adding more
+      if (addresses.length >= 4) {
+        setAddressErrorMsg("You can have only 4 active addresses");
+        setTimeout(() => {
+          setAddressErrorMsg("");
+        }, 4000);
+        return;
+      }
       if (
         cityName.trim() === "" ||
         addressLine1.trim() === "" ||
@@ -92,6 +101,7 @@ const UserAddresses = () => {
         });
         console.log(response);
         setAddresses(response.data.addresses);
+        
       } catch (error) {
         console.log(error);
       }
@@ -127,29 +137,13 @@ const UserAddresses = () => {
         <div className="text-xl font-semibold mb-4">User addresses</div>
         {addresses.map((address) => {
           return (
-            <div
+            <UserAddressCard
               key={address._id}
-              className="flex items-center gap-4 justify-between  border-b p-2"
-            >
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-1">
-                  <CiLocationOn />
-                  <span>{address.cityId.cityName}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span>{address.addressLine1},</span>
-                  <span>{address.addressLine2}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => removeAddress(address._id)}
-                  variant="destructive"
-                >
-                  Remove
-                </Button>
-              </div>
-            </div>
+              address={address}
+              removeAddress={removeAddress}
+              addresses={addresses}
+              setAddresses={setAddresses}
+            />
           );
         })}
         <div className="flex justify-end my-4">

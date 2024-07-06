@@ -57,7 +57,7 @@ const MyOrders = () => {
         </div>
         <div className="flex flex-col gap-4">
           {orders.map((order) => {
-            return <MyOrderCard key={order._id} order={order} />;
+            return <MyOrderCard key={order._id} order={order}/>;
           })}
         </div>
       </div>

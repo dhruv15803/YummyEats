@@ -8,7 +8,7 @@ import Layout from "./Layouts/Layout";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import { createContext, useEffect, useState } from "react";
-import { City, Cuisine, GlobalContextType, User } from "./types";
+import { Address, City, Cuisine, GlobalContextType, User } from "./types";
 import axios from "axios";
 import AdminLayout from "./Layouts/AdminLayout";
 import AdminCuisine from "./Pages/AdminCuisine";
@@ -35,6 +35,7 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUserFromCart, setIsUserFromCart] = useState<boolean>(false);
   const [redirectRestaurantId, setRedirectRestaurantId] = useState<string>("");
+  const [defaultAddress,setDefaultAddress] = useState<Address | null>(null);
 
   const getLoggedInUser = async () => {
     try {
@@ -115,6 +116,8 @@ function App() {
           setIsUserFromCart,
           redirectRestaurantId,
           setRedirectRestaurantId,
+          defaultAddress,
+          setDefaultAddress,
         }}
       >
         <Router>

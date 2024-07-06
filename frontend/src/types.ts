@@ -26,6 +26,8 @@ export type GlobalContextType = {
   setIsUserFromCart:React.Dispatch<SetStateAction<boolean>>;
   redirectRestaurantId:string;
   setRedirectRestaurantId:React.Dispatch<SetStateAction<string>>;
+  defaultAddress:Address | null;
+  setDefaultAddress:React.Dispatch<SetStateAction<Address | null>>
 };
 
 export type Cuisine = {
