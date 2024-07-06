@@ -22,6 +22,10 @@ export type GlobalContextType = {
   setCuisines: React.Dispatch<SetStateAction<Cuisine[]>>;
   cities: City[];
   setCities: React.Dispatch<SetStateAction<City[]>>;
+  isUserFromCart:boolean;
+  setIsUserFromCart:React.Dispatch<SetStateAction<boolean>>;
+  redirectRestaurantId:string;
+  setRedirectRestaurantId:React.Dispatch<SetStateAction<string>>;
 };
 
 export type Cuisine = {

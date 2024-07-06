@@ -30,6 +30,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantMenu = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   let cartItems = JSON.parse(localStorage.getItem(`cartItems-${id}`)!);
   if (cartItems === undefined || cartItems === null) {
@@ -42,7 +43,12 @@ const RestaurantMenu = () => {
   const [addressLine1, setAddressLine1] = useState<string>("");
   const [addressLine2, setAddressLine2] = useState<string>("");
   const [pinCode, setPinCode] = useState<string>("");
-  const { loggedInUser } = useContext(GlobalContext) as GlobalContextType;
+  const {
+    loggedInUser,
+    isLoggedIn,
+    setIsUserFromCart,
+    setRedirectRestaurantId,
+  } = useContext(GlobalContext) as GlobalContextType;
 
   const incrementQty = (itemId: string) => {
     const newCart = cart.map((cartItem) => {
@@ -197,7 +203,17 @@ const RestaurantMenu = () => {
                 <SheetFooter className="my-4">
                   <Dialog>
                     <DialogTrigger asChild>
-                      <Button>Checkout</Button>
+                      <Button
+                        onClick={() => {
+                          if (!isLoggedIn) {
+                            setIsUserFromCart(true);
+                            navigate("/login");
+                            setRedirectRestaurantId(restaurant?._id!);
+                          }
+                        }}
+                      >
+                        {isLoggedIn ? "Checkout" : "Login before checkout"}
+                      </Button>
                     </DialogTrigger>
                     <DialogContent>
                       <DialogHeader>

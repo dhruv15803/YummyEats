@@ -6,5 +6,5 @@ router.post("/checkout", authenticatedUser, orderCheckout);
 router.post("/webhook", webHookHandler);
 router.get("/getOrders/:sortByOrder", authenticatedUser, getMyOrders);
 router.get("/getRestaurantOrders/:id", authenticatedUser, getRestaurantOrders);
-router.put('/updateStatus', authenticatedUser, updateOrderStatus);
+router.put("/updateStatus", authenticatedUser, updateOrderStatus);
 export default router;

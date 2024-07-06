@@ -6,44 +6,62 @@ import { Label } from "@/components/ui/label";
 import { GlobalContextType } from "@/types";
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isShowPassword, setIsShowPassword] = useState<boolean>(false);
-  const [validFieldsErrorMsg,setValidFieldsErrorMsg] = useState<string>("");
-  const [formErrorMsg,setFormErrorMsg] = useState<string>("");
-  const {setLoggedInUser,setIsLoggedIn,setIsAdmin} = useContext(GlobalContext) as GlobalContextType;
+  const [validFieldsErrorMsg, setValidFieldsErrorMsg] = useState<string>("");
+  const [formErrorMsg, setFormErrorMsg] = useState<string>("");
+  const {
+    setLoggedInUser,
+    setIsLoggedIn,
+    setIsAdmin,
+    isUserFromCart,
+    redirectRestaurantId,
+    setIsUserFromCart,
+    setRedirectRestaurantId,
+  } = useContext(GlobalContext) as GlobalContextType;
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
-        e.preventDefault();
-        setFormErrorMsg("");
-        setValidFieldsErrorMsg("");
-        if(email.trim()==="" || password.trim()==="") {
-            setValidFieldsErrorMsg("Please enter all fields");
-            setTimeout(() => {
-                setValidFieldsErrorMsg("");
-            },4000)
-            return;
-        }
-        const response = await axios.post(`${backendUrl}/api/auth/login`,{
-            email,
-            password,
-        },{withCredentials:true});
-        console.log(response);
-        setIsLoggedIn(true);
-        setLoggedInUser(response.data.user);
-        setIsAdmin(response.data.user.isAdmin);
-        navigate('/');
-    } catch (error:any) {
-        console.log(error);
-        setFormErrorMsg(error.response.data.message);
+      e.preventDefault();
+      setFormErrorMsg("");
+      setValidFieldsErrorMsg("");
+      if (email.trim() === "" || password.trim() === "") {
+        setValidFieldsErrorMsg("Please enter all fields");
         setTimeout(() => {
-            setFormErrorMsg("");
-        },4000)
+          setValidFieldsErrorMsg("");
+        }, 4000);
+        return;
+      }
+      const response = await axios.post(
+        `${backendUrl}/api/auth/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
+      console.log(response);
+      setIsLoggedIn(true);
+      setLoggedInUser(response.data.user);
+      setIsAdmin(response.data.user.isAdmin);
+      if (isUserFromCart) {
+        navigate(`/restaurants/menu/${redirectRestaurantId}`);
+        setIsUserFromCart(false);
+        setRedirectRestaurantId("");
+      } else {
+        navigate("/");
+      }
+    } catch (error: any) {
+      console.log(error);
+      setFormErrorMsg(error.response.data.message);
+      setTimeout(() => {
+        setFormErrorMsg("");
+      }, 4000);
     }
   };
 
@@ -90,8 +108,12 @@ const Login = () => {
               Click here to register
             </Link>
           </div>
-          {validFieldsErrorMsg!=="" && <div className="text-red-500">{validFieldsErrorMsg}</div>}
-          {formErrorMsg!=="" && <div className="text-red-500">{formErrorMsg}</div>}
+          {validFieldsErrorMsg !== "" && (
+            <div className="text-red-500">{validFieldsErrorMsg}</div>
+          )}
+          {formErrorMsg !== "" && (
+            <div className="text-red-500">{formErrorMsg}</div>
+          )}
           <Button>Login</Button>
         </form>
       </div>

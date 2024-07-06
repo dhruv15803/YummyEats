@@ -16,7 +16,12 @@ import {
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import axios from "axios";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -64,10 +69,20 @@ const Navbar = () => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/manage/restaurant')}>Manage restaurant</DropdownMenuItem>
-                    {isAdmin && <DropdownMenuItem onClick={() => navigate('/admin')}>Admin panel</DropdownMenuItem>}
-                    <DropdownMenuItem onClick={() => navigate('/orders')}>Your orders</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>Profile</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/manage/restaurant")}
+                  >
+                    Manage restaurant
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <DropdownMenuItem onClick={() => navigate("/admin")}>
+                      Admin panel
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => navigate("/orders")}>
+                    Your orders
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
               <AlertDialog>

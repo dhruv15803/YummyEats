@@ -22,6 +22,7 @@ import RestaurantResults from "./Pages/RestaurantResults";
 import RestaurantMenu from "./Pages/RestaurantMenu";
 import MyOrders from "./Pages/MyOrders";
 import { RestaurantOrders } from "./Pages/RestaurantOrders";
+import Profile from "./Pages/Profile";
 export const backendUrl = "http://localhost:5000";
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
@@ -29,9 +30,11 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [loggedInUser, setLoggedInUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [cuisines,setCuisines] = useState<Cuisine[]>([]);
-  const [cities,setCities] = useState<City[]>([]);
-  const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+  const [cities, setCities] = useState<City[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isUserFromCart, setIsUserFromCart] = useState<boolean>(false);
+  const [redirectRestaurantId, setRedirectRestaurantId] = useState<string>("");
 
   const getLoggedInUser = async () => {
     try {
@@ -43,7 +46,7 @@ function App() {
         }
       );
       console.log(response);
-      if(response.data.success) {
+      if (response.data.success) {
         setLoggedInUser(response.data.user);
         setIsLoggedIn(true);
         setIsAdmin(response.data.user.isAdmin);
@@ -63,7 +66,7 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const getCities = async () => {
     try {
@@ -73,7 +76,7 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getLoggedInUser();
@@ -81,15 +84,17 @@ function App() {
     getCities();
   }, []);
 
-  if(isLoading) {
+  if (isLoading) {
     return (
       <>
-      <div className="flex justify-center items-center my-16 gap-2">
-        <Loader height="80" width="80" color="#0088ff"/>
-        <span className="text-xl font-semibold text-blue-500">Loading...</span>
-      </div>
+        <div className="flex justify-center items-center my-16 gap-2">
+          <Loader height="80" width="80" color="#0088ff" />
+          <span className="text-xl font-semibold text-blue-500">
+            Loading...
+          </span>
+        </div>
       </>
-    )
+    );
   }
 
   return (
@@ -106,12 +111,16 @@ function App() {
           setCuisines,
           cities,
           setCities,
+          isUserFromCart,
+          setIsUserFromCart,
+          redirectRestaurantId,
+          setRedirectRestaurantId,
         }}
       >
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home/>} />
+              <Route index element={<Home />} />
               <Route
                 path="login"
                 element={isLoggedIn ? <Navigate to="/" /> : <Login />}
@@ -120,17 +129,30 @@ function App() {
                 path="register"
                 element={isLoggedIn ? <Navigate to="/" /> : <Register />}
               />
-              <Route path="admin" element={isAdmin ? <AdminLayout/>:<Navigate to="/"/>}>
-                <Route index element={<AdminCuisine/>}/>
-                <Route path="city" element={<AdminCity/>}/>
+              <Route
+                path="admin"
+                element={isAdmin ? <AdminLayout /> : <Navigate to="/" />}
+              >
+                <Route index element={<AdminCuisine />} />
+                <Route path="city" element={<AdminCity />} />
               </Route>
-              <Route path="manage/restaurant" element={<ManageRestaurant/>}/>
-              <Route path="register/restaurant" element={<RestaurantRegister/>}/>
-              <Route path="manage/restaurant/:id" element={<RestaurantManage/>}/>
-              <Route path="restaurants/:city" element={<RestaurantResults/>}/>
-              <Route path="restaurants/menu/:id" element={<RestaurantMenu/>}/>
-              <Route path="orders" element={<MyOrders/>}/>
-              <Route path="manage/restaurant/orders/:id" element={<RestaurantOrders/>}/>
+              <Route path="manage/restaurant" element={<ManageRestaurant />} />
+              <Route
+                path="register/restaurant"
+                element={<RestaurantRegister />}
+              />
+              <Route
+                path="manage/restaurant/:id"
+                element={<RestaurantManage />}
+              />
+              <Route path="restaurants/:city" element={<RestaurantResults />} />
+              <Route path="restaurants/menu/:id" element={<RestaurantMenu />} />
+              <Route path="orders" element={<MyOrders />} />
+              <Route
+                path="manage/restaurant/orders/:id"
+                element={<RestaurantOrders />}
+              />
+              <Route path="profile" element={<Profile/>}/>
             </Route>
           </Routes>
         </Router>

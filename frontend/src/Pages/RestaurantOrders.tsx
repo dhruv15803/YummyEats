@@ -25,7 +25,7 @@ export const RestaurantOrders = () => {
     };
     fetchRestaurantOrders();
   }, [id]);
-  console.log(restaurantOrders);
+
   return (
     <>
       <div className="flex flex-col mx-10 my-16">
