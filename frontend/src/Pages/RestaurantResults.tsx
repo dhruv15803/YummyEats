@@ -1,4 +1,5 @@
 import { GlobalContext, backendUrl } from "@/App";
+import Loader from "@/components/Loader";
 import RestaurantResultCard from "@/components/RestaurantResultCard";
 import SelectCuisineCard from "@/components/SelectCuisineCard";
 import { Button } from "@/components/ui/button";
@@ -16,10 +17,13 @@ const RestaurantResults = () => {
   const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>(
     []
   );
+  const [isRestaurantsLoading, setIsRestaurantsLoading] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchRestaurantsByCity = async () => {
       try {
+        setIsRestaurantsLoading(true);
         const response = await axios.get(
           `${backendUrl}/api/restaurant/getByCity/${city}`,
           {
@@ -30,6 +34,8 @@ const RestaurantResults = () => {
         setRestaurants(response.data.restaurants);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsRestaurantsLoading(false);
       }
     };
     fetchRestaurantsByCity();
@@ -56,6 +62,17 @@ const RestaurantResults = () => {
     });
     setFilteredRestaurants(filtered);
   }, [filterByCuisines, restaurants]);
+
+  if (isRestaurantsLoading) {
+    return (
+      <>
+        <div className="flex items-center justify-center my-16 gap-2">
+          <Loader height="80" width="80" color="black" />
+          <span className="font-semibold">Loading restaurants</span>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

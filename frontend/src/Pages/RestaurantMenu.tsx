@@ -202,7 +202,7 @@ const RestaurantMenu = () => {
   if (isLoading) {
     return (
       <>
-        <div className="flex items-center justify-center my-16">
+        <div className="flex items-center justify-center my-16 gap-4">
           <Loader height="80" width="80" color="black" />
           <span className="text-xl font-semibold">Loading...</span>
         </div>
