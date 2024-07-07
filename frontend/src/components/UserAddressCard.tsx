@@ -8,14 +8,12 @@ import { backendUrl } from "@/App";
 
 type UserAddressCardProps = {
   address: Address;
-  removeAddress: (id: string) => Promise<void>;
   addresses: Address[];
   setAddresses: React.Dispatch<SetStateAction<Address[]>>;
 };
 
 const UserAddressCard = ({
   address,
-  removeAddress,
   addresses,
   setAddresses,
 }: UserAddressCardProps) => {
@@ -149,16 +147,7 @@ const UserAddressCard = ({
           </>
         )}
         <div className="flex items-center gap-2">
-          {isEditAddress === false ? (
-            <Button
-              onClick={() => removeAddress(address._id)}
-              variant="destructive"
-            >
-              Remove
-            </Button>
-          ) : (
-            <Button onClick={editAddress}>Save changes</Button>
-          )}
+          {isEditAddress && <Button onClick={editAddress}>Save changes</Button>}
           <Button onClick={toggleEdit} variant="outline">
             {isEditAddress ? "Cancel" : "Edit"}
           </Button>

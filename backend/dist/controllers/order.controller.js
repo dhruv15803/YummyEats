@@ -8,7 +8,7 @@ import { Restaurant } from "../models/restaurants.model.js";
 const stripe = new Stripe(process.env.STRIPE_API_KEY);
 const orderCheckout = async (req, res) => {
     try {
-        const { cart, restaurantId, addressLine1, cityName, addressLine2, pin_code, } = req.body;
+        const { cart, restaurantId, addressLine1, cityName, addressLine2, pin_code, shipping_id, } = req.body;
         const userId = req.userId;
         const user = await User.findById(userId);
         if (!user) {
@@ -37,16 +37,22 @@ const orderCheckout = async (req, res) => {
             };
         });
         const city = await City.findOne({ cityName: cityName });
-        const address = await Address.create({
-            addressLine1,
-            addressLine2,
-            cityId: city?._id,
-            pin_code,
-            userId: user._id,
-        });
+        let address;
+        if (shipping_id === "") {
+            address = await Address.create({
+                addressLine1,
+                addressLine2,
+                cityId: city?._id,
+                pin_code,
+                userId: user._id,
+            });
+        }
+        else {
+            address = await Address.findOne({ _id: shipping_id });
+        }
         const order = await Order.create({
             user_id: user._id,
-            shipping_address: address._id,
+            shipping_address: address?._id,
             orderItems,
             orderStatus: "PAID",
             restaurant_id: new mongoose.Types.ObjectId(restaurantId),

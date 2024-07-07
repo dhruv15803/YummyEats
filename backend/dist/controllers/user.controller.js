@@ -174,9 +174,9 @@ const editAddress = async (req, res) => {
                 userId: new mongoose.Types.ObjectId(req.userId),
             },
         });
-        const updatedAddress = await Address.findOne({ _id: id }).populate('cityId');
+        const updatedAddress = await Address.findOne({ _id: id }).populate("cityId");
         res.status(200).json({
-            "success": true,
+            success: true,
             updatedAddress,
         });
     }

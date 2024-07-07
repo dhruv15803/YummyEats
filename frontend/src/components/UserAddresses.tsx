@@ -77,22 +77,6 @@ const UserAddresses = () => {
     }
   };
 
-  const removeAddress = async (id: string) => {
-    try {
-      const response = await axios.delete(
-        `${backendUrl}/api/user/deleteAddress/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log(response);
-      const newAddresses = addresses.filter((address) => address._id !== id);
-      setAddresses(newAddresses);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
     const fetchUserAddresses = async () => {
       try {
@@ -101,7 +85,6 @@ const UserAddresses = () => {
         });
         console.log(response);
         setAddresses(response.data.addresses);
-        
       } catch (error) {
         console.log(error);
       }
@@ -140,7 +123,6 @@ const UserAddresses = () => {
             <UserAddressCard
               key={address._id}
               address={address}
-              removeAddress={removeAddress}
               addresses={addresses}
               setAddresses={setAddresses}
             />

@@ -35,7 +35,7 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUserFromCart, setIsUserFromCart] = useState<boolean>(false);
   const [redirectRestaurantId, setRedirectRestaurantId] = useState<string>("");
-  const [defaultAddress,setDefaultAddress] = useState<Address | null>(null);
+  const [defaultAddress, setDefaultAddress] = useState<Address | null>(null);
 
   const getLoggedInUser = async () => {
     try {
@@ -155,7 +155,7 @@ function App() {
                 path="manage/restaurant/orders/:id"
                 element={<RestaurantOrders />}
               />
-              <Route path="profile" element={<Profile/>}/>
+              <Route path="profile" element={<Profile />} />
             </Route>
           </Routes>
         </Router>

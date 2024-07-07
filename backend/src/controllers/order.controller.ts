@@ -25,6 +25,7 @@ const orderCheckout = async (req: Request, res: Response) => {
       cityName,
       addressLine2,
       pin_code,
+      shipping_id,
     }: {
       cart: CartItem[];
       restaurantId: string;
@@ -32,6 +33,7 @@ const orderCheckout = async (req: Request, res: Response) => {
       cityName: string;
       addressLine2: string;
       pin_code: number;
+      shipping_id: string;
     } = req.body;
     const userId = req.userId;
     const user = await User.findById(userId);
@@ -61,16 +63,21 @@ const orderCheckout = async (req: Request, res: Response) => {
       };
     });
     const city = await City.findOne({ cityName: cityName });
-    const address = await Address.create({
-      addressLine1,
-      addressLine2,
-      cityId: city?._id,
-      pin_code,
-      userId: user._id,
-    });
+    let address;
+    if (shipping_id === "") {
+      address = await Address.create({
+        addressLine1,
+        addressLine2,
+        cityId: city?._id,
+        pin_code,
+        userId: user._id,
+      });
+    } else {
+      address = await Address.findOne({ _id: shipping_id });
+    }
     const order = await Order.create({
       user_id: user._id,
-      shipping_address: address._id,
+      shipping_address: address?._id,
       orderItems,
       orderStatus: "PAID",
       restaurant_id: new mongoose.Types.ObjectId(restaurantId),

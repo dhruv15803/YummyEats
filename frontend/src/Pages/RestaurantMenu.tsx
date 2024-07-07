@@ -24,9 +24,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { CartItem, GlobalContextType, MenuItem, Restaurant } from "@/types";
+import {
+  Address,
+  CartItem,
+  GlobalContextType,
+  MenuItem,
+  Restaurant,
+} from "@/types";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
+import { CiLocationOn } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
 
 const RestaurantMenu = () => {
@@ -43,6 +50,9 @@ const RestaurantMenu = () => {
   const [addressLine1, setAddressLine1] = useState<string>("");
   const [addressLine2, setAddressLine2] = useState<string>("");
   const [pinCode, setPinCode] = useState<string>("");
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [isNewAddress, setIsNewAddress] = useState<boolean>(false);
+  const [shippingAddress, setShippingAddress] = useState<Address | null>(null);
   const {
     loggedInUser,
     isLoggedIn,
@@ -95,18 +105,40 @@ const RestaurantMenu = () => {
 
   const checkoutOrder = async () => {
     try {
-      const response = await axios.post(
-        `${backendUrl}/api/order/checkout`,
-        {
-          cart,
-          restaurantId: restaurant?._id,
-          addressLine1,
-          addressLine2,
-          cityName: restaurant?.cityId.cityName,
-          pin_code: parseInt(pinCode),
-        },
-        { withCredentials: true }
-      );
+      let response;
+      if (isNewAddress) {
+        response = await axios.post(
+          `${backendUrl}/api/order/checkout`,
+          {
+            cart,
+            restaurantId: restaurant?._id,
+            addressLine1,
+            addressLine2,
+            cityName: restaurant?.cityId.cityName,
+            pin_code: parseInt(pinCode),
+            shipping_id: "",
+          },
+          { withCredentials: true }
+        );
+      } else {
+        if (shippingAddress === null) return;
+        if (shippingAddress.cityId.cityName !== restaurant?.cityId.cityName) {
+          return;
+        }
+        response = await axios.post(
+          `${backendUrl}/api/order/checkout`,
+          {
+            cart,
+            restaurantId: restaurant?._id,
+            shipping_id: shippingAddress._id,
+            addressLine1,
+            addressLine2,
+            cityName: restaurant?.cityId.cityName,
+            pin_code: parseInt(pinCode),
+          },
+          { withCredentials: true }
+        );
+      }
       console.log(response);
       window.location.href = response.data.url;
       setCart([]);
@@ -148,6 +180,24 @@ const RestaurantMenu = () => {
     if (restaurant === null) return;
     localStorage.setItem(`cartItems-${restaurant?._id}`, JSON.stringify(cart));
   }, [cart]);
+
+  useEffect(() => {
+    const fetchUserAddresses = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/user/addresses`, {
+          withCredentials: true,
+        });
+        console.log(response);
+        setAddresses(response.data.addresses);
+        if (response.data.addresses.length !== 0) {
+          setShippingAddress(response.data.addresses[0]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUserAddresses();
+  }, []);
 
   if (isLoading) {
     return (
@@ -220,51 +270,111 @@ const RestaurantMenu = () => {
                         <DialogTitle>Order details</DialogTitle>
                         <DialogDescription></DialogDescription>
                       </DialogHeader>
-                      <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-2">
-                          <Input
-                            readOnly
-                            type="email"
-                            value={loggedInUser?.email}
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Label>Address Line 1</Label>
-                          <Input
-                            value={addressLine1}
-                            onChange={(e) => setAddressLine1(e.target.value)}
-                            type="text"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Label>Address Line 2</Label>
-                          <Input
-                            value={addressLine2}
-                            onChange={(e) => setAddressLine2(e.target.value)}
-                            type="text"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Label>City</Label>
-                          <Input
-                            readOnly
-                            value={restaurant?.cityId.cityName}
-                            type="text"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Label>Pin code</Label>
-                          <Input
-                            type="text"
-                            value={pinCode}
-                            onChange={(e) => setPinCode(e.target.value)}
-                            maxLength={6}
-                          />
-                        </div>
-                      </div>
+                      {!isNewAddress && (
+                        <>
+                          <div className="flex flex-col gap-2">
+                            <div className="text-xl font-semibold">
+                              Choose shipping address
+                            </div>
+                            {addresses.length === 0 && (
+                              <>
+                                <div className="text-gray-500">
+                                  You have no addresses
+                                </div>
+                              </>
+                            )}
+                            {addresses?.map((address) => {
+                              return (
+                                <div
+                                  key={address._id}
+                                  onClick={() => setShippingAddress(address)}
+                                  className={`flex flex-col gap-2 border-b cursor-pointer p-2 hover:bg-gray-100 hover:bg-gray-100 hover:duration-300 ${
+                                    shippingAddress?._id === address._id
+                                      ? "bg-gray-100"
+                                      : ""
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-1">
+                                    <CiLocationOn />
+                                    <span>{address.cityId.cityName}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span>{address.addressLine1},</span>
+                                    <span>{address.addressLine2}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <span>PIN:</span>
+                                    <span>{address.pin_code}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </>
+                      )}
+                      {addresses.length < 4 && (
+                        <Button
+                          onClick={() => setIsNewAddress(!isNewAddress)}
+                          variant="link"
+                        >
+                          {isNewAddress ? "Cancel" : "New address"}
+                        </Button>
+                      )}
+                      {isNewAddress && (
+                        <>
+                          <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-2">
+                              <Input
+                                readOnly
+                                type="email"
+                                value={loggedInUser?.email}
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <Label>Address Line 1</Label>
+                              <Input
+                                value={addressLine1}
+                                onChange={(e) =>
+                                  setAddressLine1(e.target.value)
+                                }
+                                type="text"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <Label>Address Line 2</Label>
+                              <Input
+                                value={addressLine2}
+                                onChange={(e) =>
+                                  setAddressLine2(e.target.value)
+                                }
+                                type="text"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <Label>City</Label>
+                              <Input
+                                readOnly
+                                value={restaurant?.cityId.cityName}
+                                type="text"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <Label>Pin code</Label>
+                              <Input
+                                type="text"
+                                value={pinCode}
+                                onChange={(e) => setPinCode(e.target.value)}
+                                maxLength={6}
+                              />
+                            </div>
+                          </div>
+                        </>
+                      )}
                       <DialogFooter>
                         <DialogClose>Cancel</DialogClose>
-                        <Button onClick={checkoutOrder}>Checkout</Button>
+                        {shippingAddress !== null && (
+                          <Button onClick={checkoutOrder}>Checkout</Button>
+                        )}
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
