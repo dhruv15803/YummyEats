@@ -33,7 +33,7 @@ const SelectCuisineCard = ({
   }, [isCuisineChecked]);
 
   useEffect(() => {
-    if(restaurantCuisines.length===0) {
+    if (restaurantCuisines.length === 0) {
       setIsCuisineChecked(false);
       return;
     }

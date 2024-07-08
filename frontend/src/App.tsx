@@ -89,10 +89,8 @@ function App() {
     return (
       <>
         <div className="flex justify-center items-center my-16 gap-2">
-          <Loader height="80" width="80" color="#0088ff" />
-          <span className="text-xl font-semibold text-blue-500">
-            Loading...
-          </span>
+          <Loader height="80" width="80" color="black" />
+          <span className="text-xl font-semibold">Loading...</span>
         </div>
       </>
     );

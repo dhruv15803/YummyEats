@@ -53,6 +53,7 @@ const RestaurantMenu = () => {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [isNewAddress, setIsNewAddress] = useState<boolean>(false);
   const [shippingAddress, setShippingAddress] = useState<Address | null>(null);
+  const [checkoutErrorMsg, setCheckoutErrorMsg] = useState<string>("");
   const {
     loggedInUser,
     isLoggedIn,
@@ -107,6 +108,17 @@ const RestaurantMenu = () => {
     try {
       let response;
       if (isNewAddress) {
+        if (
+          addressLine1.trim() === "" ||
+          addressLine2.trim() === "" ||
+          pinCode.trim().length !== 6
+        ) {
+          setCheckoutErrorMsg("Please enter all fields");
+          setTimeout(() => {
+            setCheckoutErrorMsg("");
+          }, 4000);
+          return;
+        }
         response = await axios.post(
           `${backendUrl}/api/order/checkout`,
           {
@@ -142,8 +154,12 @@ const RestaurantMenu = () => {
       console.log(response);
       window.location.href = response.data.url;
       setCart([]);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setCheckoutErrorMsg(error.response.data.message);
+      setTimeout(() => {
+        setCheckoutErrorMsg("");
+      }, 4000);
     }
   };
 
@@ -276,7 +292,7 @@ const RestaurantMenu = () => {
                             <div className="text-xl font-semibold">
                               Choose shipping address
                             </div>
-                            {addresses.length === 0 && (
+                            {addresses?.length === 0 && (
                               <>
                                 <div className="text-gray-500">
                                   You have no addresses
@@ -312,7 +328,7 @@ const RestaurantMenu = () => {
                           </div>
                         </>
                       )}
-                      {addresses.length < 4 && (
+                      {addresses?.length < 4 && (
                         <Button
                           onClick={() => setIsNewAddress(!isNewAddress)}
                           variant="link"
@@ -370,9 +386,12 @@ const RestaurantMenu = () => {
                           </div>
                         </>
                       )}
+                      {checkoutErrorMsg !== "" && (
+                        <div className="text-red-500">{checkoutErrorMsg}</div>
+                      )}
                       <DialogFooter>
                         <DialogClose>Cancel</DialogClose>
-                        {shippingAddress !== null && (
+                        {(shippingAddress !== null || isNewAddress) && (
                           <Button onClick={checkoutOrder}>Checkout</Button>
                         )}
                       </DialogFooter>

@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 const authenticatedUser = async (req, res, next) => {
     if (!req.cookies?.accessToken) {
         res.json({
-            "success": false,
-            "message": "no accessToken cookie,user not logged in"
+            success: false,
+            message: "no accessToken cookie,user not logged in",
         });
         return;
     }
@@ -12,4 +12,4 @@ const authenticatedUser = async (req, res, next) => {
     req.userId = userId;
     next();
 };
-export { authenticatedUser, };
+export { authenticatedUser };

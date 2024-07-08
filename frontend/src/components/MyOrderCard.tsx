@@ -11,19 +11,20 @@ type MyOrderCardProps = {
 const MyOrderCard = ({ order }: MyOrderCardProps) => {
   const [isShowItems, setIsShowItems] = useState<boolean>(false);
 
-
-  const convertToDate = (timestamp:Date) => {
+  const convertToDate = (timestamp: Date) => {
     const date = new Date(timestamp).toLocaleDateString();
     const time = new Date(timestamp).toLocaleTimeString();
-    return `${date} ${time}`
-  } 
-
+    return `${date} ${time}`;
+  };
 
   return (
     <>
       <div className="flex flex-col border rounded-lg shadow-md p-4 gap-2">
         <div className="flex justify-between">
-          <Link className=" text-2xl font-semibold hover:underline hover:underline-offset-4" to={`/restaurants/menu/${order.restaurant_id._id}`}>
+          <Link
+            className=" text-2xl font-semibold hover:underline hover:underline-offset-4"
+            to={`/restaurants/menu/${order.restaurant_id._id}`}
+          >
             {order.restaurant_id.restaurantName}
           </Link>
           <span>{convertToDate(order.createdAt)}</span>
