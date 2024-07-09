@@ -43,6 +43,6 @@ const orderSchema = new mongoose.Schema({
     },
     orderTotal: {
         type: Number,
-    }
+    },
 }, { timestamps: true });
-export const Order = mongoose.model('Order', orderSchema);
+export const Order = mongoose.model("Order", orderSchema);

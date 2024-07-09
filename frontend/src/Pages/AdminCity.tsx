@@ -1,7 +1,14 @@
 import { GlobalContext, backendUrl } from "@/App";
 import AdminCityCard from "@/components/AdminCityCard";
+import Paginate from "@/components/Paginate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { GlobalContextType } from "@/types";
 import axios from "axios";
 import React, { useContext, useState } from "react";
@@ -10,6 +17,12 @@ const AdminCity = () => {
   const { cities, setCities } = useContext(GlobalContext) as GlobalContextType;
   const [cityName, setCityName] = useState<string>("");
   const [addCityErrorMsg, setAddCityErrorMsg] = useState<string>("");
+  const [currPage, setCurrPage] = useState<number>(1);
+  const noOfCitiesPerPage = 5;
+  const noOfPages = Math.ceil(cities.length / noOfCitiesPerPage);
+  const indexOfLastPost = currPage * noOfCitiesPerPage;
+  const indexOfFirstPost = indexOfLastPost - noOfCitiesPerPage;
+  const citiesPerPage = cities.slice(indexOfFirstPost, indexOfLastPost);
 
   const addCity = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
@@ -72,9 +85,9 @@ const AdminCity = () => {
           <div className="text-red-500">{addCityErrorMsg}</div>
         )}
         <div className="flex flex-col gap-2">
-          {cities.length !== 0 ? (
+          {citiesPerPage.length !== 0 ? (
             <>
-              {cities.map((city) => {
+              {citiesPerPage.map((city) => {
                 return (
                   <AdminCityCard
                     key={city._id}
@@ -85,6 +98,11 @@ const AdminCity = () => {
                   />
                 );
               })}
+              <Paginate
+                noOfPages={noOfPages}
+                currPage={currPage}
+                setCurrPage={setCurrPage}
+              />
             </>
           ) : (
             <div className="text-gray-500">Website has no supported cities</div>

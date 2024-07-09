@@ -1,5 +1,6 @@
 import { GlobalContext, backendUrl } from "@/App";
 import Loader from "@/components/Loader";
+import Paginate from "@/components/Paginate";
 import RestaurantResultCard from "@/components/RestaurantResultCard";
 import SelectCuisineCard from "@/components/SelectCuisineCard";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,17 @@ const RestaurantResults = () => {
   );
   const [isRestaurantsLoading, setIsRestaurantsLoading] =
     useState<boolean>(false);
+  const [currPage, setCurrPage] = useState<number>(1);
+  const noOfRestaurantsPerPage = 5;
+  const noOfPages = Math.ceil(
+    filteredRestaurants.length / noOfRestaurantsPerPage
+  );
+  const indexOfLast = currPage * noOfRestaurantsPerPage;
+  const indexOfFirst = indexOfLast - noOfRestaurantsPerPage;
+  const restaurantsPerPage = filteredRestaurants.slice(
+    indexOfFirst,
+    indexOfLast
+  );
 
   useEffect(() => {
     const fetchRestaurantsByCity = async () => {
@@ -61,6 +73,7 @@ const RestaurantResults = () => {
       if (isFilter) return r;
     });
     setFilteredRestaurants(filtered);
+    setCurrPage(1);
   }, [filterByCuisines, restaurants]);
 
   if (isRestaurantsLoading) {
@@ -100,7 +113,7 @@ const RestaurantResults = () => {
           })}
         </div>
         <div className="flex flex-col w-[80%] p-2 gap-4">
-          {filteredRestaurants.map((restaurant) => {
+          {restaurantsPerPage.map((restaurant) => {
             return (
               <RestaurantResultCard
                 key={restaurant._id}
@@ -108,6 +121,13 @@ const RestaurantResults = () => {
               />
             );
           })}
+          {noOfPages > 1 && (
+            <Paginate
+              noOfPages={noOfPages}
+              currPage={currPage}
+              setCurrPage={setCurrPage}
+            />
+          )}
         </div>
       </div>
     </>

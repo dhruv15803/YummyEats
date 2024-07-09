@@ -41,14 +41,14 @@ const orderSchema = new mongoose.Schema(
     orderItems: [orderItemSchema],
     orderStatus: {
       type: String,
-      enum: ["PAID","PLACED","IN-PROGRESS", "OUT FOR DELIVERY", "DELIVERED"],
+      enum: ["PAID", "PLACED", "IN-PROGRESS", "OUT FOR DELIVERY", "DELIVERED"],
       required: true,
     },
-    orderTotal:{
-        type:Number,
-    }
+    orderTotal: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );
 
-export const Order = mongoose.model('Order',orderSchema);
+export const Order = mongoose.model("Order", orderSchema);
