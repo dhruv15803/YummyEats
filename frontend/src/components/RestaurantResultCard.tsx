@@ -21,7 +21,7 @@ const RestaurantResultCard = ({ restaurant }: RestaurantResultCardProps) => {
           alt=""
         />
       </div>
-      <div className="flex flex-col w-[70%] gap-2">
+      <div className="flex flex-col w-[70%] gap-2 p-2">
         <div className="text-xl font-semibold">{restaurant.restaurantName}</div>
         <div className="flex items-center gap-1">
           <CiLocationOn />

@@ -8,11 +8,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-// noOfPages={noOfPages}
-//               itemsPerPage={noOfCitiesPerPage}
-//               currPage={currPage}
-//               setCurrPage={setCurrPage}
-
 type PaginateProps = {
   noOfPages: number;
   currPage: number;

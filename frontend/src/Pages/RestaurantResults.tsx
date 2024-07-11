@@ -89,12 +89,12 @@ const RestaurantResults = () => {
 
   return (
     <>
-      <div className="my-8 flex items-center mx-10  gap-2">
-        <span className="text-2xl">Restaurant results in {city} </span>
-        <span>({restaurants.length} results)</span>
+      <div className="my-4 flex items-center mx-10 gap-2">
+        <div className="text-lg flex font-semibold flex-wrap md:text-2xl">Restaurant results in {city} </div>
+        <div className="flex flex-wrap">({restaurants.length} results)</div>
       </div>
-      <div className="flex  gap-4 mx-10 my-16">
-        <div className="flex flex-col w-[20%] border p-2 shadow-md rounded-lg gap-1">
+      <div className="flex flex-col md:flex-row  gap-4 md:mx-10 my-4">
+        <div className="flex flex-col md:w-[30%] mx-2 border p-2 shadow-md rounded-lg gap-1">
           {filterByCuisines.length !== 0 && (
             <Button onClick={() => setFilterByCuisines([])}>
               Clear filters
@@ -112,7 +112,7 @@ const RestaurantResults = () => {
             );
           })}
         </div>
-        <div className="flex flex-col w-[80%] p-2 gap-4">
+        <div className="flex flex-col md:w-[80%] p-2 gap-4">
           {restaurantsPerPage.map((restaurant) => {
             return (
               <RestaurantResultCard

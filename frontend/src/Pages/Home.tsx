@@ -67,66 +67,66 @@ const Home = () => {
 
   return (
     <>
-        <div className="flex flex-col border-2">
-          <div>
-            <img
-              src={heroImg}
-              className="w-full max-h-[600px] object-cover"
-              alt=""
-            />
-          </div>
-          <div className="flex flex-col items-center justify-center my-2">
-                    <h1 className="text-5xl font-semibold tracking-tight text-orange-600">
-             Tuck into a takeway today
+      <div className="flex flex-col border-2">
+        <div>
+          <img
+            src={heroImg}
+            className="w-full max-h-[600px] object-cover"
+            alt=""
+          />
+        </div>
+        <div className="flex flex-col items-center justify-center my-2">
+          <h1 className="md:text-5xl text-2xl font-semibold tracking-tight text-orange-600">
+            Tuck into a takeway today
           </h1>
-          <span className="text-xl">Food is just a click away!</span>
+          <span className="md:text-xl text-md">Food is just a click away!</span>
+        </div>
+        <form
+          onSubmit={(e) => handleSearch(e)}
+          className="flex items-center justify-center gap-4 md:mx-20 mx-4  mt-4 mb-2"
+        >
+          <Input
+            value={searchCity}
+            onChange={(e) => setSearchCity(e.target.value)}
+            type="text"
+            name="searchCity"
+            id="searchCity"
+            placeholder="Search for restaurants in your city"
+          />
+          <Button>Search</Button>
+        </form>
+        {formErrorMsg !== "" && (
+          <div className="text-red-500">{formErrorMsg}</div>
+        )}
+        {suggestedCities.length !== 0 && (
+          <div className="flex flex-col border rounded-md z-10 mx-20 mb-6 bg-white">
+            {suggestedCities?.map((suggestion) => {
+              return (
+                <span
+                  key={suggestion._id}
+                  className="cursor-pointer hover:bg-gray-300 p-2 hover:duration-300"
+                  onClick={() => setSearchCity(suggestion.cityName)}
+                >
+                  {suggestion.cityName}
+                </span>
+              );
+            })}
           </div>
-          <form
-            onSubmit={(e) => handleSearch(e)}
-            className="flex items-center justify-center gap-4 mx-20  mt-4 mb-2"
-          >
-            <Input
-              value={searchCity}
-              onChange={(e) => setSearchCity(e.target.value)}
-              type="text"
-              name="searchCity"
-              id="searchCity"
-              placeholder="Search for restaurants in your city"
-            />
-            <Button>Search</Button>
-          </form>
-          {formErrorMsg !== "" && (
-            <div className="text-red-500">{formErrorMsg}</div>
-          )}
-          {suggestedCities.length !== 0 && (
-            <div className="flex flex-col border rounded-md z-10 mx-20 mb-6 bg-white">
-              {suggestedCities?.map((suggestion) => {
-                return (
-                  <span
-                    key={suggestion._id}
-                    className="cursor-pointer hover:bg-gray-300 p-2 hover:duration-300"
-                    onClick={() => setSearchCity(suggestion.cityName)}
-                  >
-                    {suggestion.cityName}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-          <div className="grid md:grid-cols-2 gap-5">
-            <img src={landingImage} />
-            <div className="flex flex-col items-center justify-center gap-4 text-center">
-              <span className="font-bold text-3xl tracking-tighter">
-                Order takeaway even faster!
-              </span>
-              <span>
-                Download the MernEats App for faster ordering and personalised
-                recommendations
-              </span>
-              <img src={appDownloadImage} />
-            </div>
+        )}
+        <div className="grid md:grid-cols-2 gap-5">
+          <img src={landingImage} />
+          <div className="flex flex-col items-center justify-center gap-4 text-center">
+            <span className="font-bold text-3xl tracking-tighter">
+              Order takeaway even faster!
+            </span>
+            <span>
+              Download the MernEats App for faster ordering and personalised
+              recommendations
+            </span>
+            <img src={appDownloadImage} />
           </div>
         </div>
+      </div>
     </>
   );
 };
