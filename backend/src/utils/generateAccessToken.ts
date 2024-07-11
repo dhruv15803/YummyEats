@@ -8,7 +8,9 @@ const generateAccessToken = (id:Types.ObjectId,res:Response) => {
     },process.env.JWT_SECRET as string);
     res.cookie('accessToken',token,{
         httpOnly:true,
-        expires:new Date(Date.now() + 1000*60*60*24)
+        expires:new Date(Date.now() + 1000*60*60*24),
+        secure:process.env.NODE_ENV==="production",
+        sameSite:'none',
     })
 }
 
