@@ -23,7 +23,7 @@ import RestaurantMenu from "./Pages/RestaurantMenu";
 import MyOrders from "./Pages/MyOrders";
 import { RestaurantOrders } from "./Pages/RestaurantOrders";
 import Profile from "./Pages/Profile";
-export const backendUrl = "http://localhost:5000";
+export const backendUrl = "https://yummyeats-hfbc.onrender.com";
 export const GlobalContext = createContext<GlobalContextType | null>(null);
 
 function App() {

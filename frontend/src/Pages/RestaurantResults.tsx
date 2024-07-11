@@ -90,7 +90,9 @@ const RestaurantResults = () => {
   return (
     <>
       <div className="my-4 flex items-center mx-10 gap-2">
-        <div className="text-lg flex font-semibold flex-wrap md:text-2xl">Restaurant results in {city} </div>
+        <div className="text-lg flex font-semibold flex-wrap md:text-2xl">
+          Restaurant results in {city}{" "}
+        </div>
         <div className="flex flex-wrap">({restaurants.length} results)</div>
       </div>
       <div className="flex flex-col md:flex-row  gap-4 md:mx-10 my-4">
