@@ -1,7 +1,6 @@
 import { Cuisine } from "@/types";
 import React, { SetStateAction, useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
-import { Label } from "./ui/label";
 
 type SelectCuisineCardProps = {
   cuisine: Cuisine;

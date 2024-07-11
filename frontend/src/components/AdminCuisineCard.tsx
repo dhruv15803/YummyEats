@@ -1,5 +1,5 @@
 import { Cuisine, GlobalContextType } from "@/types";
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { GlobalContext, backendUrl } from "@/App";

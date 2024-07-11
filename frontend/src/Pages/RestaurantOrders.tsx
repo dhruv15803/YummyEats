@@ -2,7 +2,7 @@ import { backendUrl } from "@/App";
 import RestaurantOrderCard from "@/components/RestaurantOrderCard";
 import { Order } from "@/types";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export const RestaurantOrders = () => {

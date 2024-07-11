@@ -4,10 +4,9 @@ import Paginate from "@/components/Paginate";
 import RestaurantResultCard from "@/components/RestaurantResultCard";
 import SelectCuisineCard from "@/components/SelectCuisineCard";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Cuisine, GlobalContextType, Restaurant } from "@/types";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const RestaurantResults = () => {

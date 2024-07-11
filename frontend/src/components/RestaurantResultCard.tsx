@@ -1,5 +1,4 @@
 import { Restaurant } from "@/types";
-import React from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import { Button } from "./ui/button";

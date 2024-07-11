@@ -1,5 +1,4 @@
 import { CartItem } from "@/types";
-import React from "react";
 import { Button } from "./ui/button";
 
 type CartItemCardProps = {

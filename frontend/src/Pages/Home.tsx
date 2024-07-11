@@ -1,8 +1,7 @@
-import { GlobalContext, backendUrl } from "@/App";
+import { GlobalContext} from "@/App";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { City, GlobalContextType } from "@/types";
-import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import heroImg from "../assets/hero (1).png";

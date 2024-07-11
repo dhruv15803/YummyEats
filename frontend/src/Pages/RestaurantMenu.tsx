@@ -32,7 +32,7 @@ import {
   Restaurant,
 } from "@/types";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -304,7 +304,7 @@ const RestaurantMenu = () => {
                                 <div
                                   key={address._id}
                                   onClick={() => setShippingAddress(address)}
-                                  className={`flex flex-col gap-2 border-b cursor-pointer p-2 hover:bg-gray-100 hover:bg-gray-100 hover:duration-300 ${
+                                  className={`flex flex-col gap-2 border-b cursor-pointer p-2 hover:bg-gray-100  hover:duration-300 ${
                                     shippingAddress?._id === address._id
                                       ? "bg-gray-100"
                                       : ""

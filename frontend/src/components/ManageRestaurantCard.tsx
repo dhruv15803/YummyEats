@@ -1,5 +1,5 @@
 import { Restaurant } from "@/types";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import { Button } from "./ui/button";
@@ -65,7 +65,7 @@ const ManageRestaurantCard = ({
           </div>
           <div className="flex items-center gap-1">
             <BiDish />
-            {restaurant.restaurantCuisines.map((cuisine, i) => {
+            {restaurant.restaurantCuisines.map((cuisine) => {
               return <span key={cuisine._id}>{cuisine.cuisineName}</span>;
             })}
           </div>

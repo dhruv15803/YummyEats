@@ -226,6 +226,7 @@ const RestaurantRegister = () => {
                 })}
               </div>
             </div>
+            {registerRestaurantErrorMsg!=="" && <div className="text-red-500">{registerRestaurantErrorMsg}</div>}
             <Button
               disabled={
                 restaurantCuisines.length < 1 ||

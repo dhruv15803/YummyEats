@@ -8,7 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import UserAddresses from "@/components/UserAddresses";
 import { GlobalContextType } from "@/types";
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 
 const Profile = () => {
   const { loggedInUser, setLoggedInUser } = useContext(

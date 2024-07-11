@@ -1,5 +1,5 @@
 import { Order } from "@/types";
-import React, { useState } from "react";
+import { useState } from "react";
 import { CiLocationOn } from "react-icons/ci";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";

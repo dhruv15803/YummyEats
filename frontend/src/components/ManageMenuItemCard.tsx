@@ -130,6 +130,7 @@ const ManageMenuItemCard = ({
               type="number"
               placeholder="Enter price"
             />
+            {editErrorMsg!=="" && <div className="text-red-500 my-2">{editErrorMsg}</div>}
           </>
         ) : (
           <>

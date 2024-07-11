@@ -1,8 +1,7 @@
 import { backendUrl, GlobalContext } from "@/App";
 import { Address, City, GlobalContextType } from "@/types";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import { CiLocationOn } from "react-icons/ci";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import {
   Dialog,

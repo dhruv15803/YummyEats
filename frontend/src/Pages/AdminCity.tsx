@@ -3,12 +3,6 @@ import AdminCityCard from "@/components/AdminCityCard";
 import Paginate from "@/components/Paginate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { GlobalContextType } from "@/types";
 import axios from "axios";
 import React, { useContext, useState } from "react";

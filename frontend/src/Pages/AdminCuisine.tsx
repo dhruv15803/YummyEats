@@ -3,7 +3,7 @@ import AdminCuisineCard from "@/components/AdminCuisineCard";
 import Paginate from "@/components/Paginate";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Cuisine, GlobalContextType } from "@/types";
+import { GlobalContextType } from "@/types";
 import axios from "axios";
 import React, { useContext, useState } from "react";
 

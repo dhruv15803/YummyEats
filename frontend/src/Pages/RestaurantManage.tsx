@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -35,7 +34,7 @@ import {
 } from "@/components/ui/select";
 import { Cuisine, GlobalContextType, MenuItem, Restaurant } from "@/types";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import  { useContext, useEffect, useState } from "react";
 import { BiDish } from "react-icons/bi";
 import { CiLocationOn } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
@@ -291,6 +290,7 @@ const RestaurantManage = () => {
                   );
                 })}
               </div>
+              {editRestaurantErrorMsg!=="" && <div className="text-red-500">{editRestaurantErrorMsg}</div>}
             </>
           ) : (
             <>
