@@ -86,7 +86,7 @@ const UserAddressCard = ({
     <>
       <div
         key={address._id}
-        className="flex items-center gap-4 justify-between  border-b p-2"
+        className="flex flex-col md:flex-row md:items-center gap-4 justify-between border-b p-2"
       >
         {isEditAddress ? (
           <>
@@ -101,7 +101,7 @@ const UserAddressCard = ({
                   type="text"
                 />
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col md:flex-row md:items-center gap-2">
                 <Input
                   value={newAddressLine1}
                   onChange={(e) => setNewAddressLine1(e.target.value)}

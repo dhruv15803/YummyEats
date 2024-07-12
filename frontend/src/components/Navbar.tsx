@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { useContext } from "react";
 import { GlobalContext, backendUrl } from "@/App";
 import { GlobalContextType } from "@/types";
-import { RxAvatar } from "react-icons/rx";
+import { RxAvatar, RxHamburgerMenu } from "react-icons/rx";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +22,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { Separator } from "./ui/separator";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -56,7 +65,62 @@ const Navbar = () => {
         </div>
         {isLoggedIn ? (
           <>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center text-xl md:hidden">
+              <Sheet>
+                <SheetTrigger>
+                  <RxHamburgerMenu />
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>
+                      <div className="flex items-center gap-1 cursor-pointer p-2">
+                        <div className="text-4xl">
+                          <RxAvatar />
+                        </div>
+                        <span className="font-semibold text-lg">
+                          {loggedInUser?.email}
+                        </span>
+                      </div>
+                    </SheetTitle>
+                  </SheetHeader>
+                  <Separator />
+                  <div className="flex flex-col mx-2 gap-2 my-4">
+                    <Link
+                      className="hover:text-gray-500 hover:duration-300"
+                      to="/profile"
+                    >
+                      Profile
+                    </Link>
+                    <Link
+                      className="hover:text-gray-500 hover:duration-300"
+                      to="/manage/restaurant"
+                    >
+                      Manage Restaurant
+                    </Link>
+                    {isAdmin && (
+                      <Link
+                        className="hover:text-gray-500 hover:duration-300"
+                        to="/admin"
+                      >
+                        Admin panel
+                      </Link>
+                    )}
+                    <Link
+                      className="hover:text-gray-500 hover:duration-300"
+                      to="/orders"
+                    >
+                      Your orders
+                    </Link>
+                  </div>
+                  <SheetFooter>
+                    <Button onClick={logoutUser} variant="outline">
+                      Logout
+                    </Button>
+                  </SheetFooter>
+                </SheetContent>
+              </Sheet>
+            </div>
+            <div className="items-center gap-4 hidden md:flex">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <div className="flex items-center gap-1 cursor-pointer">
