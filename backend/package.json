@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"node dist/index.js\" \"stripe listen --forward-to localhost:5000/api/order/webhook\""
+    "start": "concurrently \"node dist/index.js\" \"stripe listen --forward-to https://yummyeats-hfbc.onrender.com/api/order/webhook\""
   },
   "keywords": [],
   "author": "",
