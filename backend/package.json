@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node dist/index.js"
+    "start": "concurrently \"node dist/index.js\" \"stripe listen --forward-to localhost:5000/api/order/webhook\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/multer": "^1.4.11"
+    "@types/multer": "^1.4.11",
+    "concurrently": "^8.2.2"
   }
 }

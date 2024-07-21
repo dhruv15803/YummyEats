@@ -84,7 +84,7 @@ const registerRestaurant = async (req, res) => {
 };
 const editRestaurant = async (req, res) => {
     try {
-        const { newRestaurantName, newRestaurantCity, newAddressLine1, newAddressLine2, newRestaurantCuisines, id, } = req.body;
+        const { newRestaurantName, newRestaurantCity, newAddressLine1, newAddressLine2, newRestaurantCuisines, newRestaurantImage, id, } = req.body;
         const city = await City.findOne({
             cityName: newRestaurantCity.trim().toLowerCase(),
         });
@@ -103,6 +103,7 @@ const editRestaurant = async (req, res) => {
                 addressLine1: newAddressLine1,
                 addressLine2: newAddressLine2,
                 restaurantCuisines: cuisineIds,
+                restaurantThumbnail: newRestaurantImage,
             },
         });
         const updatedRestaurant = await Restaurant.findOne({ _id: id })

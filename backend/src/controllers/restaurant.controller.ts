@@ -99,6 +99,7 @@ const editRestaurant = async (req: Request, res: Response) => {
       newAddressLine1,
       newAddressLine2,
       newRestaurantCuisines,
+      newRestaurantImage,
       id,
     } = req.body;
     const city = await City.findOne({
@@ -121,6 +122,7 @@ const editRestaurant = async (req: Request, res: Response) => {
           addressLine1: newAddressLine1,
           addressLine2: newAddressLine2,
           restaurantCuisines: cuisineIds,
+          restaurantThumbnail:newRestaurantImage,
         },
       }
     );

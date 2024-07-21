@@ -403,7 +403,7 @@ const RestaurantMenu = () => {
           </Sheet>
         </div>
         <div className="flex flex-col gap-2 my-4">
-          {menuItems.map((item) => {
+          {menuItems.length!==0 ? menuItems.map((item) => {
             return (
               <MenuItemCard
                 key={item._id}
@@ -412,7 +412,11 @@ const RestaurantMenu = () => {
                 setCart={setCart}
               />
             );
-          })}
+          }) : <>
+            <div className="my-10 text-gray-600 flex justify-center">
+              No menu items available
+            </div>
+          </>}
         </div>
       </div>
     </>

@@ -59,9 +59,12 @@ const RestaurantManage = () => {
   const [newAddressLine2, setNewAddressLine2] = useState<string>("");
   const [newRestaurantCuisines, setNewRestaurantCuisines] = useState<Cuisine[]>(
     []
-  );
+  )
+  const [newRestaurantFile,setNewRestaurantFile] = useState<File | null>(null);
+  const [newRestaurantImage,setNewRestaurantImage] = useState<string>("");
+  const [restaurantImageLoading,setRestaurantImageLoading] = useState<boolean>(false);
   const [editRestaurantErrorMsg, setEditRestaurantErrorMsg] =
-    useState<string>("");
+  useState<string>("");
 
   const toggleEditRestaurant = () => {
     if (isEditRestaurant === false) {
@@ -74,6 +77,7 @@ const RestaurantManage = () => {
         ...prev,
         ...restaurant?.restaurantCuisines!,
       ]);
+      setNewRestaurantImage(restaurant?.restaurantThumbnail!);
     } else {
       setIsEditRestaurant(false);
     }
@@ -102,6 +106,7 @@ const RestaurantManage = () => {
           newAddressLine1,
           newAddressLine2,
           newRestaurantCuisines,
+          newRestaurantImage,
           id: restaurant?._id,
         },
         { withCredentials: true }
@@ -203,7 +208,28 @@ const RestaurantManage = () => {
     getMenuItems();
   }, [id]);
 
-  console.log(menuItems);
+
+  useEffect(() => {
+    const fetchRestaurantThumbnail = async () => {
+      try {
+        setRestaurantImageLoading(true);
+        const response = await axios.post(`${backendUrl}/api/restaurant/getFileUrl`,{
+          "restaurantThumbnailFile":newRestaurantFile,
+        },{
+          headers:{
+            'Content-Type':'multipart/form-data'
+          }
+        });
+        console.log(response);
+        setNewRestaurantImage(response.data.url);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setRestaurantImageLoading(false);
+      }
+    }
+    fetchRestaurantThumbnail();
+  },[newRestaurantFile])
 
   if (isLoading) {
     return (
@@ -242,6 +268,18 @@ const RestaurantManage = () => {
           </div>
           {isEditRestaurant ? (
             <>
+              <div className="flex flex-col gap-1">
+                {restaurantImageLoading ? <>
+                  <div className="flex items-center gap-2">
+                    <Loader width="60" height="60" color="black"/>
+                    <span className="font-semibold">Loading...</span>
+                  </div>
+                </> : <>
+                <img className="w-40 rounded-lg" src={newRestaurantImage} alt="" />
+                <label className="border-2 w-fit bg-gray-50 p-2 rounded-lg hover:bg-gray-600 hover:text-white hover:duration-300" htmlFor="newRestaurantFile">Change thumbnail</label>
+                <input hidden type="file" id="newRestaurantFile" onChange={(e) => setNewRestaurantFile(e.target.files ? e.target.files[0] : null)}/>
+                </>}
+              </div>
               <div>
                 <Input
                   value={newRestaurantName}
@@ -323,7 +361,7 @@ const RestaurantManage = () => {
             </>
           )}
           <div className="flex justify-end gap-4">
-            {isEditRestaurant && <Button onClick={editRestaurant}>Edit</Button>}
+            {isEditRestaurant && <Button disabled={restaurantImageLoading} onClick={editRestaurant}>Edit</Button>}
             <Button onClick={toggleEditRestaurant} variant="outline">
               {isEditRestaurant ? "Cancel" : "Edit restaurant details"}
             </Button>
