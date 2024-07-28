@@ -15,3 +15,5 @@ registered restaurants page.
 Manage restaurant
 ![image](https://github.com/user-attachments/assets/09fdcf08-f697-4bfb-84ae-f17a031138e9)
 
+Registe restaurant page
+![image](https://github.com/user-attachments/assets/32f90a19-c335-432b-8fb2-448edac15a93)
